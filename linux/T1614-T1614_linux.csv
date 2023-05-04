@@ -1,0 +1,26 @@
+# T1614
+
+T1614,linux,1,Discover System Location Using 3rd Party Websites
+_E_,Netflow,ICMP:*->*iplocation.io
+_E_,Netflow,ICMP:*->*ip2location.com
+_E_,Netflow,ICMP:*->*iplist.cc
+_E_,Netflow,ICMP:*->*db-ip.com
+_E_,Netflow,ICMP:*->*ipgeolocation.io
+_E_,Netflow,ICMP:*->*ipinfo.io
+_E_,Netflow,ICMP:*->*iplist.cc
+_E_,Netflow,ICMP:*->*ipapi.co
+_E_,Netflow,ICMP:*->*iplocality.com
+
+T1614.001,linux,3,Discover System Language with locale
+_E_,Process,cmdline~=locale
+
+T1614.001,linux,4,Discover System Language with localectl
+_E_,Process,cmdline~=localectl status
+
+T1614.001,linux,5,Discover System Language by locale file
+_E_,File,READ,path*=.*\blocale\b
+
+T1614.001,linux,6,Discover System Language by Environment Variable Query
+_E_,Process,cmdline~=env
+_E_,Process,cmdline~=printenv
+_E_,Process,cmdline~=set

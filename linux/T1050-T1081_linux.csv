@@ -1,0 +1,368 @@
+# "at daemon" is not installed with most default distro configs.
+#  The admin would have had to install the package
+
+T1053.001,linux,1,At - Schedule a job
+FYI,which at && which atd
+_E_,Process,cmdline=at now + 1 minute
+_E_,File,CREATE|WRITE,path~=/var/spool/at/
+
+T1053.002,linux,2,At - Schedule a job
+!!!,TODO write validation rules for this
+
+T1053.003,linux,1,Cron - Replace crontab with referenced file
+_E_,Process,cmdline=crontab -l > /tmp/notevil
+_E_,Process,cmdline=crontab /tmp/persistevil
+# the /tmp/evil.sh is not actually executed, and does not get created in prereqs
+#_E_,Process,cmdline~=/tmp/evil.sh
+FYI,TODO we should monitor /var/spool/cron/crontabs/
+_E_,File,WRITE,path~=/var/spool/cron/crontabs/
+
+T1053.003,linux,2,Cron - Add script to all cron subfolders
+FYI,all commands are built-in echos with no process events. watch filemods instead
+ARG,cron_script_name,T1053.003_2
+_E_,File,WRITE,path~=/etc/cron.hourly/
+_E_,File,WRITE,path~=/etc/cron.daily/
+_E_,File,WRITE,path~=/etc/cron.weekly/
+_E_,File,WRITE,path~=/etc/cron.monthly/
+
+T1053.003,linux,3,Cron - Add script to /var/spool/cron/crontabs/ folder
+_E_,File,WRITE,path=/var/spool/cron/crontabs/persistevil
+
+# T1053.006 Systemd units and timers - persistence
+
+T1053.006,linux,1,Create Systemd Service and Timer
+!!!,this is prompting for password
+_E_,Process,cmdline*=systemctl start art-timer.timer
+_E_,Process,cmdline*=systemctl enable art-timer.timer
+_E_,Process,cmdline*=systemctl daemon-reload
+_E_,File,WRITE,path=/etc/systemd/system/art-timer.service
+_E_,File,WRITE,path=/etc/systemd/system/art-timer.timer
+
+T1053.006,linux,2,Create a user level transient systemd service and timer
+_E_,Process,cmdline*=systemd-run --user --unit=Atomic-Red-Team-User --on-calendar .* /bin/sh -c
+_E_,File,WRITE,path*=/var/run/user/[0-9]*/systemd/transient/Atomic-Red-Team-User.service
+_E_,File,WRITE,path*=/var/run/user/[0-9]*/systemd/transient/Atomic-Red-Team-User.timer
+
+T1053.006,linux,3,Create a system level transient systemd service and timer
+_E_,Process,cmdline*=systemd-run --unit=Atomic-Red-Team --on-calendar .* /bin/sh -c
+_E_,File,WRITE,path=/var/run/systemd/transient/Atomic-Red-Team.service
+_E_,File,WRITE,path=/var/run/systemd/transient/Atomic-Red-Team.timer
+
+# T1055.008 Process Injection via PTrace
+
+T1055.008,linux,1,PTrace Attach Inject
+_E_,Process,cmdline=./dummy
+_E_,Process,cmdline~=./injector
+_E_,PTrace,something=something
+_E_,File,WRITE,path=/proc/sys/kernel/yama/ptrace_scope
+
+
+# T1056 keylogging / password capture
+
+T1056.001,linux,2,Living off the land Terminal Input Capture on Linux with pam.d
+_E_,Process,cmdline*=echo .* pam_tty_audit.so .* log_password.*> /etc/pam.d/password-auth
+_E_,Process,cmdline*=echo .* pam_tty_audit.so .* log_password.*> /etc/pam.d/system-auth
+_E_,File,WRITE,path=/etc/pam.d/password-auth
+_E_,File,WRITE,path=/etc/pam.d/system-auth
+
+# it's tough to nail down this one.  How to indicate logger-t run by prompt/shell?
+# since bash will only execute the prompt in interactive tty
+T1056.001,linux,3,Logging bash history to syslog
+!!!,this require interactive tty
+#_E_,Process,cmdline~=history -a
+#_E_,Process,cmdline~=tee -a ~/.bash_history
+#_E_,Process,cmdline*=logger -t .*USER.*SSH_CONNECTION
+_E_,Process,cmdline=tail /var/log/syslog
+_E_,File,WRITE,path=/var/log/syslog
+FYI,TODO: add /var/log/syslog to filemod READ paths
+_E_,File,READ,path=/var/log/syslog
+
+# uses bash builtin trap
+T1056.001,linux,4,Bash session based keylogger
+ARG,output_file,/tmp/T1056.001_4_hist.log
+_E_,Process,cmdline~=date
+_E_,File,WRITE,path=#{output_file}
+
+T1056.001,linux,5,SSHD PAM keylogger
+!!!,Requires local ssh server, with user RSA authorized_key to avoid interaction
+_E_,Process,cmdline~=systemctl restart sshd
+_E_,Process,cmdline~=systemctl restart auditd
+_E_,Process,cmdline*=ssh .*localhost
+_E_,Process,cmdline~=whoami
+_E_,Process,cmdline~=sudo su
+_E_,File,WRITE,path=/etc/pam.d/sshd
+
+T1056.001,linux,6,Auditd keylogger
+_E_,Process,"cmdline~=auditctl -a always,exit -F arch=b64 -S execve -k CMDS"
+_E_,Process,"cmdline~=auditctl -a always,exit -F arch=b32 -S execve -k CMDS"
+_E_,Process,cmdline~=whoami
+_E_,Process,cmdline~=ausearch -i --start
+
+T1057,linux,1,Process Discovery - ps
+_E_,Process,"cmdline~=ps "
+_E_,File,WRITE,path=#{output_file}
+
+T1059.004,linux,1,Create and Execute Bash Shell Script
+_E_,Process,cmdline=sh -c "echo 'echo Hello from the Atomic Red Team' > /tmp/art.sh"
+_E_,Process,cmdline=sh -c "echo 'ping -c 4 8.8.8.8' >> /tmp/art.sh"
+_E_,Process,cmdline=chmod +x /tmp/art.sh
+_E_,Process,cmdline=sh /tmp/art.sh
+_E_,File,CHMOD,mode=+x,path=/tmp/art.sh
+FYI,When ICMP netflows change is merged, uncomment netflow line
+#_E_,Netflow,ICMP:*->8.8.8.8:*
+
+T1059.004,linux,2,Command-Line Interface
+ARG,script_url,https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh
+_E_,Process,cmdline=curl -sS #{script_url}
+FYI,TODO: host script on our own server rather than github
+_E_,Process,cmdline=bash
+_E_,Process,cmdline=wget --quiet -O - #{script_url}
+_E_,Process,cmdline=sh
+# TODO : need to make telemcat match hostname and/or ipv4/ipv6
+_E_,Netflow,TCP:*->*.githubusercontent.com:443,ipv4=TCP:*->185.199.*:443
+_E_,File,WRITE,path=/tmp/art-fish.txt
+_C_,Process,Pipe,0,1
+_C_,Process,Pipe,2,3
+
+T1059.004,linux,3,Harvest SUID executable files
+ARG,autosuid,/tmp/T1059.004_3_AutoSUID.sh
+ARG,autosuid_url,https://raw.githubusercontent.com/IvanGlinkin/AutoSUID/main/AutoSUID.sh
+FYI,TODO: host script on our own server rather than github
+_E_,Process,cmdline*=chmod .x .*AutoSUID.sh
+_E_,Process,cmdline*=sh .*AutoSUID.sh
+# the find command is inside the script
+_E_,File,CHMOD,mode=+x,path=#{autosuid}
+_E_,Process,cmdline*=find .* -xdev -user root.*-perm -4000 -o -perm -2000 -o -perm -6000
+# NOTE: the download is in the getPreReq stage, so won't see netflows
+
+T1059.004,linux,4,LinEnum tool execution
+!!!,test not exiting, also found 3 instances running. Fix
+_E_,Process,cmdline*=sh.*LinEnum.sh
+_E_,Process,cmdline~=grep -qa container=lxc /proc/1/environ
+_E_,Process,cmdline~=grep -i docker /proc/self/cgroup
+_E_,Process,cmdline~=docker --version
+_E_,Process,cmdline~=id
+_E_,Process,cmdline~=grep -i lxd
+_E_,Process,cmdline~=head /var/mail/root
+_E_,Process,cmdline~=.bash_history
+_E_,Process,cmdline~=.*_history
+_E_,Process,cmdline~=find /etc/ -maxdepth 1 -name *.conf
+_E_,Process,cmdline~=grep cred /etc/fstab
+_E_,Process,cmdline~=grep username /etc/fstab
+_E_,Process,cmdline~=find / -name ".git-credentials"
+_E_,Process,cmdline~=dpkg --list
+_E_,Process,cmdline~=find / -perm -4000 -type f
+_E_,Process,cmdline~=find $allsuid -perm -4000 -type f -exec
+_E_,Process,cmdline~=find $allsuid -uid 0 -perm -4002 -type f -exec
+
+T1059.006,linux,1,Execute shell script via python's command mode arguement
+ARG,payload_file_name,/tmp/T1059.006_1-payload
+_E_,Process,cmdline~=which python
+_E_,Process,cmdline*=python.* -c .import requests;import os;url
+_E_,Netflow,TCP:*->raw.githubusercontent.com:443,ipv4=TCP:*->185.199.*:443
+_E_,File,WRITE,path=#{payload_file_name}
+
+T1059.006,linux,2,Execute Python via scripts (Linux)
+ARG,python_script_name,/tmp/T1059.006_2.py
+ARG,payload_file_name,/tmp/T1059.006_2-payload
+_E_,Process,cmdline~=which python
+_E_,Process,cmdline*=python.*#{python_script_name}
+_E_,Netflow,TCP:*->*.githubusercontent.com:443,ipv4=TCP:*->185.199.*:443
+_E_,File,WRITE,path=#{python_script_name}
+_E_,File,WRITE,path=#{payload_file_name}
+
+T1059.006,linux,3,Execute Python via Python executables (Linux)
+ARG,python_script_name,/tmp/T1059.006_3.py
+ARG,payload_file_name,/tmp/T1059.006_3-payload
+ARG,python_binary_name,/tmp/T1059.006_3.pyc
+_E_,Process,cmdline~=which python
+_E_,Process,cmdline*=python.*-c .import py_compile; py_compile.compile
+_E_,Process,cmdline*=python.* #{python_binary_name}
+_E_,Netflow,TCP:*->*.githubusercontent.com:443,ipv4=TCP:*->185.199.*:443
+_E_,File,WRITE,path=#{python_script_name}
+_E_,File,WRITE,path=#{payload_file_name}
+FYI,the pyc file ends up with a numeric extension added for some reason
+_E_,File,WRITE,path~=#{python_binary_name}
+
+T1059.006,linux,4,Python pty module and spawn function used to spawn sh or bash
+!!!,TODO write validation rule
+
+T1069.001,linux,1,Permission Groups Discovery (Local)
+_E_,Process,cmdline=id
+_E_,Process,cmdline~=getent group
+_E_,Process,cmdline=cat /etc/group
+FYI,TODO: add /etc/group to ingress_read paths
+_E_,File,READ,path=/etc/group
+
+# T1070.002
+
+T1070.002,linux,1,rm -rf
+ARG,syslog_path,/var/log/syslog.T1070.002_1
+FYI,/var/audit/ may not exist on linux, it's macos
+_E_,Process,cmdline~=rm -rf #{syslog_path}
+FYI,TODO: add /var/log/syslog* to filemod paths
+_E_,File,UNLINK,path=#{syslog_path}
+
+T1070.002,linux,2,Overwrite Linux Mail Spool
+ARG,username,$username
+# NOTE: we won't see built-in echo as a process
+#_E_,Process,cmdline~=echo 0> /var/spool/mail/
+_E_,File,WRITE,path~=/var/spool/mail/#{username}
+
+T1070.002,linux,3,Overwrite Linux Log
+ARG,log_path,/var/log/secure.T1070.002_3
+# NOTE: we won't see echo as process
+#_E_,Process,cmdline~=echo 0> /var/log/secure
+_E_,File,WRITE,path~=/var/log/secure
+
+# T1070.003 Indicator Removal on Host: Clear Command History
+
+T1070.003,linux,1,Clear Bash history (rm)
+_E_,Process,cmdline*=rm .*/.bash_history
+_E_,File,UNLINK,path~=.bash_history
+
+T1070.003,linux,2,Clear Bash history (echo)
+# NOTE: we won't see echo as process
+_E_,File,WRITE,path~=.bash_history
+
+T1070.003,linux,3,Clear Bash history (cat dev/null)
+_E_,Process,cmdline~=cat /dev/null
+_E_,File,WRITE,path~=.bash_history
+
+T1070.003,linux,4,Clear Bash history (ln dev/null)
+_E_,Process,cmdline*=ln -sf /dev/null .*/.bash_history
+_E_,File,WRITE,path~=.bash_history
+
+T1070.003,linux,5,Clear Bash history (truncate)
+_E_,Process,cmdline*=truncate -s0 /.*/.bash_history
+_E_,File,WRITE,path~=/.bash_history
+
+T1070.003,linux,6,Clear history of a bunch of shells
+FYI,history, unset, and export are built-in, no process
+#_E_,Process,cmdline~=unset HISTFILE
+#_E_,Process,cmdline~=history -c
+_E_,File,WRITE,path~=.bashrc
+
+T1070.003,linux,7,Clear and Disable Bash History Logging
+FYI,history, set, and echo are built-in, no process
+#_E_,Process,cmdline~=set +o history
+#_E_,Process,cmdline~=history -c
+_E_,File,WRITE,path~=.bashrc
+
+T1070.003,linux,8,Use Space Before Command to Avoid Logging to History
+!!!,we don't see the space in events, as shell removes it, so no point in running this
+_E_,Process,cmdline=whoami
+
+T1070.003,linux,9,Disable Bash History Logging with SSH -T
+_E_,Process,cmdline*=sshpass -p.* ssh .*-T hostname
+
+# T1070.004 Indicator Removal on Host: File Deletion
+
+T1070.004,linux,1,Delete a single file - Linux/macOS
+ARG,file_to_delete,/tmp/T1070.004_1_target
+_E_,Process,cmdline~=rm -f #{file_to_delete}
+_E_,File,UNLINK,path~=#{file_to_delete}
+
+T1070.004,linux,2,Delete an entire folder - Linux/macOS
+ARG,folder_to_delete,/tmp/T1070.004_2_targetdir
+_E_,Process,cmdline~=rm -rf #{folder_to_delete}
+_E_,File,UNLINK,path~=#{folder_to_delete}
+
+T1070.004,linux,3,Overwrite and delete a file with shred
+ARG,file_to_shred,/tmp/T1070.004_3_shredme
+_E_,Process,cmdline~=shred -u #{file_to_shred}
+_E_,File,UNLINK,path=#{file_to_shred}
+
+T1070.004,linux,8,Delete Filesystem - Linux
+!!!,DESTRUCTIVE TEST - do not run
+
+# T1070.006 Indicator Removal on Host: Timestomp =======
+
+T1070.006,linux,1,Set a file's access timestamp
+!!!,Missing dependency steps to create files
+ARG,target_filename,/tmp/T1070.006A
+_E_,Process,cmdline~=touch -a -t 197001010000.00 /tmp/T1070.006
+_E_,File,WRITE|META,path=/tmp/T1070.006A
+
+T1070.006,linux,2,Set a file's modification timestamp
+!!!,Missing dependency steps to create files
+ARG,target_filename,/tmp/T1070.006B
+_E_,Process,cmdline~=touch -m -t 197001010000.00 /tmp/T1070.006
+_E_,File,WRITE|META,path=/tmp/T1070.006B
+
+T1070.006,linux,3,Set a file's creation timestamp
+!!!,Missing dependency steps to create files
+ARG,target_filename,/tmp/T1070.006C
+_E_,Process,cmdline~=date -s "1970-01-01 00:00:00"
+_E_,Process,cmdline~=touch /tmp/T1070.006
+_E_,Process,cmdline~=date -s "202
+_E_,File,WRITE|META,path=/tmp/T1070.006C
+
+T1070.006,linux,4,Modify file timestamps using reference file
+ARG,target_filename,/tmp/T1070.006D
+!!!,Missing dependency steps to create files
+_E_,Process,cmdline~=touch -acmr /bin/sh /tmp/T1070.006D
+_E_,File,WRITE|META,path=/tmp/T1070.006D
+
+T1070.009,linux,1,Remove a scheduled task
+ARG,cronjob,/etc/cron.daily/testcronjob
+_E_,File,UNLINK,path=#{cronjob}
+
+# T1070.007 Indicator Removal on Host: Clear Network Connection History and Configurations =======
+
+T1070.007,linux,1,Clear Firewall Configuration
+ARG,iptables_save_path,/tmp/iptables-save-art-T1070.007
+_E_,Process,cmdline~=iptables -F
+_E_,Process,cmdline~=iptables -X
+
+T1070.008,linux,1,Remove mailbox file
+ARG,mailbox_dir,/var/spool/mailtest
+_E_,File,UNLINK,path~=#{mailbox_dir}
+
+T1070.009,linux,1,Remove a scheduled task
+ARG,cronjob,/etc/cron.daily/testcronjob
+_E_,File,UNLINK,path=#{cronjob}
+
+# T1071.001 Application Layer Protocol: Web Protocols ======
+
+T1071.001,linux,3,Malicious User Agents - Nix
+_E_,Process,"cmdline~=curl -s -A "
+_E_,Netflow,TCP:*->www.google.com:80,ipv4=TCP:*->142.251.*:80
+
+# T1074.001 Data Staged: Local Data Staging ============
+
+T1074.001,linux,2,Stage data from Discovery.sh
+ARG,output_file,/tmp/T1074.001_discovery.log
+ARG,script_url,https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1074.001/src/Discovery.sh
+_E_,Process,cmdline~=curl -s #{script_url}
+_E_,Process,cmdline~=bash -s > #{output_file}
+_E_,Process,cmdline~=curl ifconfig.me
+_E_,Process,cmdline~=crontab -l
+_E_,Process,cmdline~=netstat -an
+_E_,Process,cmdline~=grep -i listen
+_E_,Netflow,TCP:*->*.githubusercontent.com:443,ipv4=TCP:*->185.199.*:443
+_E_,Netflow,TCP:*->ifconfig.me:80,ipv4=TCP:*->34.160.*:80
+_C_,Process,Pipe,0,1
+
+# T1078.001 Valid Accounts: Default Accounts ============
+
+T1078.001,linux,3,Enable remote Root Account access via SSH without password
+FYI,Mainly looking for file write to authorized_keys file and any related access.
+_E_,Process,cmdline~=/root/.ssh/authorized_keys
+_E_,File,READ,path=/root/.ssh/authorized_keys
+_E_,File,WRITE,path=/root/.ssh/authorized_keys
+
+# T1078.002 Valid Accounts: Domain Accounts ============
+
+T1078.002,linux,1,Attempt to join an Active Directory domain
+ARG,target_domain,donotresolve.8labs.io
+_E_,Process,cmdline~=realm join
+
+# T1078.003 Valid Accounts: Local Accounts ============
+
+T1078.003,linux,5,Create local account with admin privileges - Linux
+ARG,username,atomic_admin_user
+ARG,admin_groups,adm,sudo
+_E_,Process,cmdline~=useradd --comment "Atomic T1078.003 User" --groups #{admin_groups} --create-home #{username}
+_E_,File,WRITE,path=/etc/passwd
+_E_,File,WRITE,path=/etc/group

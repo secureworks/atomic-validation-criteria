@@ -1,0 +1,435 @@
+# T1505.003 web shell
+
+T1505.003,linux,2,linux php webshell
+ARG,script_name,T1505_003_bin.png
+ARG,host_addr,localhost
+_E_,Process,cmdline~=date
+_E_,Process,cmdline~=#{script_name}
+_E_,Process,cmdline~=ls -al
+_E_,Process,cmdline~=wc
+_E_,File,READ,path=/etc/passwd
+_E_,File,WRITE,path=/var/www/html/upload1.dat
+
+# T1518.001 Software Discovery: Security Software Discovery ========
+
+T1518.001,linux,4,Security Software Discovery - ps (Linux)
+_E_,Process,cmdline~=ps aux
+FYI,test contains egrep which is a script that runs 'grep -E' on newer systems
+_E_,Process,cmdline*=grep.*falcond.nessusd.cbagentd.td-agent
+
+# T1529 System Shutdown/Reboot ========
+
+T1529,linux,3,Restart System via `shutdown` - macOS/Linux
+!!!,skip - this reboots
+_E_,Process,cmdline~=shutdown -r now
+
+T1529,linux,4,Shutdown System via `shutdown` - macOS/Linux
+!!!,skip - this shutsdown
+_E_,Process,cmdline~=shutdown -h now
+
+T1529,linux,5,Restart System via `reboot` - macOS/Linux
+!!!,skip - this reboots
+_E_,Process,cmdline~=reboot
+
+T1529,linux,6,Shutdown System via `halt` - Linux
+!!!,skip - this shutdown
+_E_,Process,cmdline~=halt -p
+
+T1529,linux,7,Reboot System via `halt` - Linux
+!!!,skip - this reboots
+_E_,Process,cmdline~=halt --reboot
+
+T1529,linux,8,Reboot System via `halt` - Linux
+!!!,skip - this shutdown
+_E_,Process,cmdline~=poweroff
+
+T1529,linux,9,Reboot System via `halt` - Linux
+!!!,skip - this reboots
+_E_,Process,cmdline~=poweroff --reboot
+
+# T1543.002 Create or Modify System Process: Systemd Service ================
+
+T1543.002,linux,1,Create Systemd Service
+!!!,TODO: fix - this is prompting
+_E_,Process,cmdline~=systemctl daemon-reload
+_E_,Process,cmdline~=systemctl enable art-systemd-service.service
+_E_,Process,cmdline~=systemctl start art-systemd-service.service
+_E_,File,WRITE,path=/etc/systemd/system/art-systemd-service.service
+_E_,Process,cmdline~=/bin/touch /tmp/art-systemd-execstart-marker
+_E_,Process,cmdline~=/bin/touch /tmp/art-systemd-execstartpre-marker
+_E_,Process,cmdline~=/bin/touch /tmp/art-systemd-execstartpost-marker
+_E_,File,WRITE,path=/tmp/art-systemd-execstart-marker
+_E_,File,WRITE,path=/tmp/art-systemd-execstartpre-marker
+_E_,File,WRITE,path=/tmp/art-systemd-execstartpost-marker
+
+T1543.002,linux,2,"Create Systemd Service file,  Enable the service , Modify and Reload the service."
+_E_,Process,cmdline=cat
+_E_,File,WRITE,path=/etc/init.d/T1543.002
+_E_,Process,cmdline=chmod +x /etc/init.d/T1543.002
+_E_,Process,cmdline=systemctl enable T1543.002
+_E_,Process,cmdline=systemctl start T1543.002
+_?_,Process,cmdline~=chkconfig T1543.002
+_?_,Process,cmdline~=update-rc.d T1543.002 defaults
+FYI,are there files in /etc/rc.*/ for the chkconfig or update-rc.d?
+# the chkconfig is centos/redhat, while update-rc.d for debian based
+
+# T1546.004 Event Triggered Execution: .bash_profile and .bashrc ========
+
+T1546.004,linux,1,Add command to .bash_profile
+# echo is shell built-in with no process
+##_E_,Process,cmdline~=echo 'echo "Hello from Atomic Red Team T1546.004"' >> ~/.bash_profile
+_E_,File,WRITE,path*=/home/.*/.bash_profile
+
+T1546.004,linux,2,Add command to .bashrc
+# echo is shell built-in with no process
+##_E_,Process,cmdline~=echo 'echo "Hello from Atomic Red Team T1546.004"' >> ~/.bashrc
+_E_,File,WRITE,path*=/home/.*/.bashrc
+
+# T1546.005 Event Triggered Execution: Trap =============
+
+T1546.005,linux,1,Trap EXIT
+FYI,Traps are shell built-in, so we can't see them, but we can see the resulting commands
+# any way to tag these events?
+_E_,Process,"cmdline~=nohup sh "
+_E_,Process,cmdline~=T1546.005/src/echo-art-fish.sh
+_E_,File,WRITE,/tmp/art-fish.txt
+
+T1546.005,linux,2,Trap SIGINT
+FYI,Traps are shell built-in, so we can't see them, but we can see the resulting commands
+_E_,Process,cmdline~=T1546.005/src/echo-art-fish.sh
+_E_,Process,"cmdline~=nohup sh "
+_E_,Process,cmdline~=kill -SIGINT
+_E_,File,WRITE,/tmp/art-fish.txt
+
+# T1547.006 Boot or Logon Autostart Execution: Kernel Modules and Extensions =========
+
+T1547.006,linux,1,Linux - Load Kernel Module via insmod
+_E_,Process,cmdline~=insmod /tmp/T1547.006/T1547006.ko
+_E_,Module,Load,path=/tmp/T1547.006/T1547006.ko
+
+# T1548.001 Abuse Elevation Control Mechanism: Setuid and Setgid ===================
+
+T1548.001,linux,1,Make and modify binary from C source
+_E_,Process,cmdline~=chown root /tmp/hello
+_E_,Process,cmdline~=chmod u+s /tmp/hello
+_E_,Process,cmdline~=/tmp/hello
+_E_,File,WRITE,path=/tmp/hello
+FYI,this will fail until we have CHOWN
+_E_,File,CHOWN,owner=root,path=/tmp/hello
+_E_,File,CHMOD,mode=u+s,path=/tmp/hello
+
+T1548.001,linux,2,Set a SetUID flag on file
+_E_,Process,cmdline~=chown root /tmp/evilBinary
+_E_,Process,cmdline~=chmod u+s /tmp/evilBinary
+_E_,File,CHOWN,owner=root,path=/tmp/evilBinary
+_E_,File,CHMOD,mode=u+s,path=/tmp/evilBinary
+
+T1548.001,linux,3,Set a SetGID flag on file
+_E_,Process,cmdline~=chown root /tmp/evilBinary
+_E_,Process,cmdline~=chmod g+s /tmp/evilBinary
+_E_,File,CHOWN,owner=root,path=/tmp/evilBinary
+_E_,File,CHMOD,mode=g+s,path=/tmp/evilBinary
+
+T1548.001,linux,4,Make and modify capabilities of a binary
+_E_,Process,cmdline~=setcap cap_setuid=ep /tmp/cap
+_E_,Process,cmdline~=/tmp/cap
+_E_,File,SETXATTR,cap_ep,path=/tmp/cap
+# TODO: what can we warn about here?
+#_E_,Alert,ProcessElevated
+
+T1548.001,linux,5,Provide the SetUID capability to a file
+_E_,Process,cmdline~=setcap cap_setuid=ep /tmp/evilBinary
+_E_,File,WRITE,path=/tmp/evilBinary
+_E_,File,SETXATTR,cap=ep,path=/tmp/evilBinary
+
+T1548.001,linux,6,Install a file with SetUID flag set
+_E_,Process,cmdline~=install -m 4666 /dev/null /tmp/evilBinary
+_E_,File,CREATE,path=/tmp/evilBinary
+
+T1548.001,linux,7,Install a file with SetGID flag set
+_E_,Process,cmdline~=install -m g+rsw /dev/null /tmp/evilBinary
+_E_,File,CREATE,path=/tmp/evilBinary
+
+T1548.001,linux,8,Set a SetUID flag on a file via dynamic linker
+_E_,Process,cmdline~=chown root /tmp/evilBinary
+_E_,Process,cmdline~=/lib64/ld-linux-x86-64.so.2 /bin/chmod u+s /tmp/evilBinary
+_E_,File,CHOWN,owner=root,path=/tmp/evilBinary
+_E_,File,CHMOD,mode=u+s,path=/tmp/evilBinary
+
+T1548.001,linux,9,Set a SetGID flag on a file via dynamic linker
+_E_,Process,cmdline~=chown root /tmp/evilBinary
+_E_,Process,cmdline~=/lib64/ld-linux-x86-64.so.2 /bin/chmod g+s /tmp/evilBinary
+_E_,File,CHOWN,owner=root,path=/tmp/evilBinary
+_E_,File,CHMOD,mode=g+s,path=/tmp/evilBinary
+
+# T1548.003 Abuse Elevation Control Mechanism: Sudo and Sudo Caching ==========
+
+T1548.003,linux,1,Sudo usage
+!!!,skip - this hangs in vim (if installed)
+_E_,Process,cmdline~=sudo -l
+_E_,Process,cmdline~=sudo cat /etc/sudoers
+_E_,Process,cmdline~=sudo vim /etc/sudoers
+
+T1548.003,linux,2,Unlimited sudo cache timeout
+!!!,skip - this changes system file but does not revert!
+_E_,Process,cmdline~=sed -i 's/env_reset.*$/env_reset,timestamp_timeout=-1/' /etc/sudoers
+
+T1548.003,linux,3,Disable tty_tickets for sudo caching
+!!!,skip - this changes system file but does not revert!
+_E_,Process,cmdline~=sh -c "echo Defaults "'!'"tty_tickets >> /etc/sudoers"
+
+T1552,linux,1,AWS - Retrieve EC2 Password Data using stratus
+!!!,TODO write validation rules
+
+# T1552.001 Unsecured Credentials: Credentials In Files ========
+
+T1552.001,linux,2,Extract passwords with grep
+ARG,file_path,/tmp/
+_E_,Process,cmdline~=grep -ri password 
+
+T1552.001,linux,5,Find and Access Github Credentials
+ARG,file_path,/home
+_E_,Process,cmdline~=find #{file_path} -type f -name .netrc
+
+# T1552.003 Unsecured Credentials: Bash History =========
+
+T1552.003,linux,1,Search Through Bash History
+_E_,Process,cmdline*=cat .*/.bash_history
+_E_,Process,cmdline~=grep -e "-p " -e pass -e ssh
+_C_,Process,Pipe,0,1
+_E_,File,READ,path~=.bash_history
+
+# T1552.004 Unsecured Credentials: Private Keys ============
+
+T1552.004,linux,2,Discover Private SSH Keys
+ARG,search_path,/home/
+_E_,Process,cmdline*=find .* -name id_rsa
+_E_,File,READ,path*=/home/.*/.ssh/id_rsa
+
+T1552.004,linux,3,Copy Private SSH Keys with CP
+ARG,search_path,/home/
+_E_,Process,cmdline*=find .* -name id_rsa -exec cp --parents
+_E_,File,READ,path*=/home/.*/.ssh/id_rsa
+_E_,File,WRITE,path*=/tmp/art-staging/.*id_rsa
+
+T1552.004,linux,4,Copy Private SSH Keys with rsync
+ARG,search_path,/home/
+_E_,Process,cmdline*=find .* -name id_rsa -exec rsync -R
+_E_,File,READ,path*=/home/.*/.ssh/id_rsa
+_E_,File,WRITE,path*=/tmp/art-staging/.*id_rsa
+
+T1552.004,linux,5,Copy the users GnuPG directory with rsync
+ARG,search_path,/home/
+_E_,Process,cmdline*=find .* -name .gnupg -exec rsync -R
+_E_,File,READ,path*=/home/.*/.gnupg
+_E_,File,WRITE,path*=/tmp/art-staging/.gnupg
+
+# T1552.007 Kubernetes List Secrets =======================
+
+T1552.007,linux,1,Cat the contents of a Kubernetes service account token file
+!!!,skip - we only get command. any other useful events? this test installs and sets up kube AND downloads a binary from https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+_E_,Process,cmdline=kubectl --context kind-atomic-cluster exec atomic-pod -- cat /run/secrets/kubernetes.io/serviceaccount/token
+
+
+# T1553.004 Subvert Trust Controls: Install Root Certificate ===============
+
+T1553.004,linux,1,Install root CA on CentOS/RHEL
+_E_,Process,cmdline*=cp .* /etc/pki/ca-trust/source/anchors/
+_E_,Process,cmdline~=update-ca-trust
+_E_,File,WRITE,path~=/etc/pki/ca-trust/source/anchors/
+
+T1553.004,linux,2,Install root CA on Debian/Ubuntu
+_E_,Process,cmdline*=mv .* /usr/local/share/ca-certificates
+_E_,Process,cmdline~=update-ca-certificates
+_E_,File,WRITE,path~=/usr/local/share/ca-certificates
+_E_,File,WRITE,path~=/etc/ssl/certs/
+
+# T1555.003 Credentials from Password Stores: Credentials from Web Browsers ==========
+
+T1555.003,linux,9,LaZagne.py - Dump Credentials from Firefox Browser
+_E_,Process,cmdline*=python? .*laZagne.py browsers -firefox
+_E_,File,WRITE,path=/tmp/firefox_password.txt
+FYI,what firefox files are read?
+
+# T1556.003 Modify Authentication Process: Pluggable Authentication Modules ============
+
+T1556.003,linux,1,Malicious PAM rule
+_E_,Process,cmdline=*"sed -i .*auth sufficient pam_succeed_if.so uid >= 0.* /etc/pam.d/su-l"
+_E_,File,WRITE,path~=/etc/pam.d/su
+
+T1556.003,linux,2,Malicious PAM module
+FYI,pam_evil.so is actually created in the prereq command
+_E_,Process,cmdline*=sed -i .*auth sufficient /tmp/pam_evil.so.* /etc/pam.d/su-l
+_E_,File,WRITE,path~=/etc/pam.d/su
+#_E_,File,WRITE,path=/tmp/pam_evil.so
+
+# T1560.001 Archive Collected Data: Archive via Utility ========
+
+T1560.001,linux,5,Data Compressed - nix - zip
+FYI,the default input_file arg fails because btmp not readable
+ARG,input_files,/etc/passwd /etc/hosts
+ARG,output_file,/tmp/T1560.001_5.zip
+_E_,Process,cmdline~=zip #{output_file} #{input_files}
+_E_,File,READ,path=/etc/passwd
+
+T1560.001,linux,6,Data Compressed - nix - gzip Single File
+ARG,input_file,/tmp/T1560.001_6.txt
+_E_,Process,cmdline~=gzip -k 
+
+T1560.001,linux,7,Data Compressed - nix - tar Folder or File
+ARG,input_file_folder,/tmp/T1560.001_7
+ARG,output_file,/tmp/T1560.001_7.tar.gz
+_E_,Process,cmdline*=tar [-]?c[vfz]+ .*#{output_file} #{input_file_folder}
+
+T1560.001,linux,8,Data Encrypted with zip and gpg symmetric
+_E_,Process,cmdline~=zip --password 
+_E_,Process,cmdline~=gpg --batch --yes --passphrase-fd 0 --output
+_E_,File,WRITE,path~=/tmp/T1560/
+
+# T1560.002 Archive Collected Data: Archive via Library ===============
+
+T1560.002,linux,1,Compressing data using GZip in Python (Linux)
+FYI,If file paths are different, we only catch command?
+FYI,If python is in file rather than command-line, can we catch it?
+_E_,Process,cmdline*=python.* -c .*gzip
+_E_,File,READ,/etc/passwd
+_E_,File,WRITE,/tmp/passwd.gz
+
+T1560.002,linux,2,Compressing data using bz2 in Python (Linux)
+FYI,If file paths are different, we only catch command?
+FYI,If python is in file rather than command-line, can we catch it?
+_E_,Process,cmdline*=python.* -c .*bz2
+_E_,File,READ,/etc/passwd
+_E_,File,WRITE,/tmp/passwd.bz2
+
+T1560.002,linux,3,Compressing data using zipfile in Python (Linux)
+FYI,If file paths are different, we only catch command?
+FYI,If python is in file rather than command-line, can we catch it?
+_E_,Process,cmdline*=python.* -c .*ZipFile
+_E_,File,READ,/etc/passwd
+_E_,File,WRITE,/tmp/passwd.zip
+
+T1560.002,linux,4,Compressing data using tarfile in Python (Linux)
+FYI,If file paths are different, we only catch command?
+FYI,If python is in file rather than command-line, can we catch it?
+_E_,Process,cmdline*=python.* -c .*ZipFile
+_E_,File,READ,/etc/passwd
+_E_,File,WRITE,/tmp/passwd.tar.gz
+
+# T1562.001 Impair Defenses: Disable or Modify Tools =============
+
+T1562.001,linux,1,Disable syslog
+_E_,Process,cmdline=systemctl stop rsyslog
+_E_,Process,cmdline=systemctl disable rsyslog
+_E_,File,WRITE,path~=/etc/systemd
+
+T1562.001,linux,2,Disable Cb Response
+!!!,skip - not installed
+
+T1562.001,linux,3,Disable SELinux
+_E_,Process,cmdline=setenforce 0
+FYI,any files change for this?
+
+T1562.001,linux,4,Stop Crowdstrike Falcon on Linux
+!!!,skip - not installed
+
+# T1562.003 Impair Defenses: HISTCONTROL =================
+
+T1562.003,linux,1,Disable history collection
+_E_,Process,env~=HISTCONTROL=ignoreboth,cmdline=whoami
+
+T1562.003,linux,2,Mac HISTCONTROL
+!!!,SKIP - manual
+
+# T1562.004 Impair Defenses: Disable or Modify System Firewall ==============
+
+T1562.004,linux,7,Stop/Start UFW firewall
+# ufw is a python script, so actual cmdline ends up being "/usr/bin/python3 /usr/sbin/ufw disable"
+_E_,Process,cmdline~=ufw disable
+
+T1562.004,linux,8,Stop/Start UFW firewall systemctl
+_E_,Process,cmdline=systemctl stop ufw
+
+T1562.004,linux,9,Turn off UFW logging
+_E_,Process,cmdline~=ufw logging off
+
+T1562.004,linux,10,Add and delete UFW firewall rules
+_E_,Process,cmdline~=ufw prepend deny from 1.2.3.4
+_E_,Process,cmdline~=ufw status numbered
+
+T1562.004,linux,11,Edit UFW firewall user.rules file
+_E_,File,WRITE,path=/etc/ufw/user.rules
+
+T1562.004,linux,12,Edit UFW firewall ufw.conf file
+_E_,File,WRITE,path=/etc/ufw/ufw.conf
+
+T1562.004,linux,13,Edit UFW firewall sysctl.conf file
+_E_,File,WRITE,path=/etc/ufw/sysctl.conf
+
+T1562.004,linux,14,Edit UFW firewall main configuration file
+_E_,File,WRITE,path=/etc/default/ufw
+
+T1562.004,linux,15,Tail the UFW firewall log file
+_E_,Process,cmdline=tail /var/log/ufw.log
+_E_,File,READ,path=/var/log/ufw.log
+
+# T1562.006 Impair Defenses: Indicator Blocking ===============
+
+T1562.006,linux,1,Auditing Configuration Changes on Linux Host
+_E_,Process,cmdline*=sed -i.*audispd.conf
+_E_,Process,cmdline*=sed -i.*auditd.conf
+_E_,Process,cmdline*=sed -i.*libaudit.conf
+_E_,File,WRITE,path~=/etc/.*audispd.conf
+_E_,File,WRITE,path~=/etc/.*auditd.conf
+_E_,File,WRITE,path~=/etc/.*libaudit.conf
+
+T1562.006,linux,2,Logging Configuration Changes on Linux Host
+_E_,Process,cmdline*=sed -i.*syslog[-ng]*.conf
+_E_,File,WRITE,path~=/etc/.*syslog[-ng]*.conf
+
+# T1562.008 TODO
+
+# T1563.001 SSH Hijacking
+
+T1563.001,linux,1,SSH hijacking ForwardAgent
+ARG,remote_host,$SERVER[rsync_ssh].addr
+ARG,remote_port,$SERVER[rsync_ssh].port
+ARG,remote_username,$SERVER[rsync_ssh].username
+ARG,local_username,bob
+_E_,Process,is_elevated=true,env~=SSH_AUTH_SOCK=/tmp/ssh-,cmdline~=ssh
+_E_,Netflow,tcp:*->#{remote_host}:#{remote_port}
+
+# T1564.001 Hide Artifacts: Hidden Files and Directories ==========
+
+T1564.001,linux,1,Create a hidden file in a hidden directory
+_E_,Process,cmdline~=mkdir /var/tmp/.hidden-directory
+_E_,File,CREATE,path~=/var/tmp/.hidden-directory
+_E_,File,CREATE,path~=/var/tmp/.hidden-directory/.hidden-file
+
+# T1569.002 System Services: Service Execution ==============
+
+T1569.002,linux,3,psexec.py (Impacket)
+!!!,need a windows target host to test
+_E_,Process,cmdline~=psexec.py
+
+# T1571 Non-Standard Port =============
+
+T1571,linux,2,Testing usage of uncommonly used port
+ARG,domain,$SERVER[http8081].addr
+ARG,port,8081
+_E_,Process,cmdline*=telnet #{domain} #{port}
+# note: netflow only if connection succeeds
+_E_,Netflow,TCP:*->#{domain}:#{port}
+
+
+# T1574.006 Hijack Execution Flow: LD_PRELOAD =============
+
+T1574.006,linux,1,Shared Library Injection via /etc/ld.so.preload
+_E_,Process,cmdline~=echo #{path_to_shared_library}
+_E_,Process,cmdline~=ls -alt
+_E_,File,WRITE,path=/etc/ld.so.preload
+_E_,File,WRITE,path=/tmp/T1574.006_so_output.txt
+
+T1574.006,linux,2,Shared Library Injection via LD_PRELOAD
+_E_,Process,env~=LD_PRELOAD=,cmdline~=ls -ta
+_E_,File,WRITE,path=/tmp/T1574.006_so_output.txt

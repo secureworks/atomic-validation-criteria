@@ -1,0 +1,13 @@
+
+T1543.001,macos,1,Create or Modify System Process Launch Agent
+_E_,Process,cmdline~=cp atomicredteam_T1543_001.plist ~/Library/LaunchAgents/
+_E_,Process,cmdline~=launchctl load -w ~/Library/LaunchAgents/com.atomicredteam.plist
+_E_,Process,cmdline~=touch /tmp/T1543_001_atomicredteam.txt
+_E_,File,CREAT|OPEN,path=/private/tmp/T1543_001_atomicredteam.txt
+
+T1543.004,macos,1,Create or Modify System Process Launch Daemon
+_E_,Process,cmdline~=cp atomicredteam_T1543_004.plist /Library/LaunchDaemons/com.atomicredteam.plist
+_E_,Process,cmdline~=launchctl load -w /Library/LaunchDaemons/com.atomicredteam.plist
+_E_,Process,cmdline~=touch /tmp/T1543_004_atomicredteam.txt
+_E_,File,CREAT|OPEN,path=/Library/LaunchDaemons/com.atomicredteam.plist
+_E_,File,CREAT|OPEN,path=/tmp/T1543_004_atomicredteam.txt

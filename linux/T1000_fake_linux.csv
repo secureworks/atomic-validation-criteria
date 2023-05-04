@@ -1,0 +1,33 @@
+# T1000 - fake tests to exercise harness handling of failing conditions
+
+T1000,linux,1,prereq fails
+_E_,Process,cmdline~=touch /tmp/does-not-exist-1000.1.txt
+_E_,File,WRITE,path*=/tmp/does-not-exist-1000.1.txt
+
+T1000,linux,2,cleanup fails
+ARG,hostname,$hostname
+ARG,addr,$ipaddr
+_E_,Process,cmdline~=stat /tmp/does-not-exist-1000_2.txt
+
+T1000,linux,3,test fails
+_E_,Process,cmdline~=grep something /etc/hosts
+
+T1000,linux,4,test fails as expected - telemetry exists
+_E_,Process,cmdline~=grep something /etc/hosts
+
+T1000,linux,5,this manual test will be skipped
+_E_,Process,cmdline~=grep something /etc/hosts
+
+T1000,linux,6,test will be marked for skip in validation criteria
+!!!,skip this pseudo-destructive test
+_E_,Process,cmdline~=rm -f /var/log/syslog.deleted
+
+T1000,linux,7,touch file - criteria arg missing variable
+ARG,target_file,$var_does_not_exist
+_E_,Process,cmdline=touch #{target_file}
+
+T1000,linux,8,touch file - criteria check missing variable
+_E_,Process,cmdline=touch #{something_missing}
+
+T1000,linux,9,test never exits
+_E_,Process,cmdline=cat

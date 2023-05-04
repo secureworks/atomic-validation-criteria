@@ -1,0 +1,129 @@
+# T1030
+
+T1030,linux,1,Data Transfer Size Limits
+_E_,Process,cmdline~=split -b 5000000
+
+T1033,linux,2,System Owner/User Discovery
+_E_,Process,cmdline=users
+_E_,Process,cmdline=w
+_E_,Process,cmdline=who
+
+T1036.003,linux,2,Masquerading as Linux crond process.
+_E_,Process,exepath=/tmp/crond
+_E_,File,CREATE,path=/tmp/crond
+
+T1036.004,linux,3,Create a cron job.
+ARG,cronjob_path,/etc/cron.daily/testcronjob
+_E_,File,CREATE,path=#{cronjob_path}
+
+T1036.005,linux,1,Execute a process from a directory masquerading as the current parent directory.
+ARG,parent_dir,/tmp
+_E_,Process,cmdline*=mkdir #{parent_dir}/...
+_E_,Process,cmdline*=cp .*#{parent_dir}/\.\.\.
+_E_,Process,cmdline~=#{parent_dir}/.../sh -c
+
+T1036.006,linux,2,Space After Filename
+_E_,Process,cmdline~=mkdir -p "testdirwithspaceend "
+_E_,Process,cmdline~=chmod +x "testdirwithspaceend /init "
+_E_,Process,"exepath=/tmp/atomic-test-T1036.006/testdirwithspaceend /init "
+_E_,Process,cmdline~=cp /usr/bin/perl "init  "
+_E_,File,CHMOD,"path~=testdirwithspaceend /init "
+_E_,File,WRITE,"path=/tmp/atomic-test-T1036.006/testdirwithspaceend /init "
+
+T1037.004,linux,2,rc.common
+_E_,Process,cmdline~=touch /etc/rc.common
+_E_,Process,cmdline~=tee /etc/rc.common
+_E_,Process,cmdline~=chmod +x /etc/rc.common
+_E_,File,WRITE,path=/etc/rc.common
+_E_,File,CHMOD,mode=+x,path=/etc/rc.common
+
+T1037.004,linux,3,rc.local
+_E_,Process,cmdline~=tee /etc/rc.local
+_E_,Process,cmdline~=chmod +x /etc/rc.local
+_E_,File,WRITE,path=/etc/rc.local
+_E_,File,CHMOD,mode=+x,path=/etc/rc.local
+
+T1040,linux,1,Packet Capture Linux using tshark or tcpdump
+_E_,Process,cmdline~=tcpdump -c 5
+_E_,Process,cmdline~=tshark -c 5
+_E_,NetSniff,
+
+T1040,linux,9,"Packet Capture Linux socket AF_PACKET,SOCK_RAW with sudo"
+_E_,Process,cmdline~=#{program_path} -a -t 3
+_E_,NetSniff,
+
+T1040,linux,10,"Packet Capture Linux socket AF_INET,SOCK_RAW,TCP with sudo"
+_E_,Process,cmdline~=#{program_path} -4 -p 6 -t 3
+_E_,NetSniff,
+
+T1040,linux,11,"Packet Capture Linux socket AF_INET,SOCK_PACKET,UDP with sudo"
+_E_,Process,cmdline~=#{program_path} -4 -P -p 17 -t 3
+_E_,NetSniff,
+
+T1040,linux,12,"Packet Capture Linux socket AF_PACKET,SOCK_RAW with BPF filter for UDP with sudo"
+_E_,Process,cmdline~=#{program_path} -a -f -t 3
+_E_,NetSniff,
+
+#T1046 hangs for me in ubuntu VM waiting on system call
+# TODO: update test to use local address and smaller range
+
+T1046,linux,1,Port Scan
+FYI,This will hang for any TCP port that is not open. So only checking one port we know is open
+ARG,host,$SERVER[rsync_ssh].addr
+ARG,portrange,$SERVER[rsync_ssh].port..$SERVER[rsync_ssh].port
+FYI,I do not see FileMods for /dev/tcp path
+#_E_,File,WRITE,path~=/dev/tcp
+_E_,Netflow,tcp:*->#{host}:*
+
+T1046,linux,2,Port Scan Nmap
+!!!,TODO: limit and parameterize these
+_E_,Process,cmdline~=nmap -sS
+_E_,Process,cmdline~=telnet 
+_E_,Process,cmdline~=nc -nv
+# TODO: netflows?
+
+T1048,linux,1,Exfiltration Over Alternative Protocol - SSH
+ARG,domain,$SERVER[rsync_ssh].addr
+ARG,port,$SERVER[rsync_ssh].port
+ARG,username,$SERVER[rsync_ssh].username
+ARG,destfile,/tmp/etc.tar.gz
+_E_,Process,cmdline*=ssh -p #{port} #{username}@#{domain}.*cd /etc .* tar -zcvf -.* > #{destfile}
+_E_,File,WRITE,path=#{destfile}
+_E_,Netflow,tcp:*->#{domain}:22
+
+T1048,linux,2,Exfiltration Over Alternative Protocol - SSH
+ARG,domain,$SERVER[rsync_ssh].addr
+ARG,port,$SERVER[rsync_ssh].port
+ARG,user_name,$SERVER[rsync_ssh].username
+ARG,targetfile,/etc/services
+_E_,Process,cmdline~=cat #{targetfile}
+_E_,Process,cmdline~=openssl des3 -salt -pass
+_E_,Process,cmdline*=ssh -p #{port} #{user_name}@#{domain} "cat > ~/uploaded_file.enc"
+_E_,Netflow,tcp:*->#{domain}:22
+
+T1048.002,linux,2,Exfiltrate data HTTPS using curl linux
+_E_,Process,cmdline*=curl -F .* -F maxDownloads=1 -F autoDelete=true https://file.io
+_E_,Netflow,tcp:*->file.io:443,ipv4=TCP:*->34.197.10.85:443,ipv4b=TCP:*->107.23.246.142:443
+
+# MANUAL
+T1048.003,linux,1,Exfiltration Over Alternative Protocol - HTTP
+!!!,skip - manual
+#_E_,Process,cmdline~=python -m SimpleHTTPServer 1337
+#_E_,Netflow,tcp:*:443->*
+
+# MANUAL
+T1048.003,linux,3,Exfiltration Over Alternative Protocol - DNS
+!!!,skip - manual
+#_E_,Process,cmdline~=xxd -p input_file > encoded_data.hex
+#_E_,Process,cmdline~=dig $data.domain
+#_E_,Netflow,udp:*->data.domain:53
+
+T1049,linux,3,System Network Connections Discovery Linux & MacOS
+_E_,Process,cmdline~=netstat
+_E_,Process,cmdline~=who -a
+
+T1049,linux,5,List network connections using Linux /proc/net
+_E_,Process,cmdline~=cat /proc/net/tcp
+_E_,Process,cmdline~=cat /proc/net/udp
+_E_,File,READ,path~=/proc/net/tcp
+_E_,File,READ,path~=/proc/net/udp
