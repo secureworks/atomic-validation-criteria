@@ -102,7 +102,7 @@ T1057,linux,1,Process Discovery - ps
 _E_,Process,"cmdline~=ps "
 _E_,File,WRITE,path=#{output_file}
 
-T1059.004,linux,1,Create and Execute Bash Shell Script
+T1059.004,linux,7e7ac3ed,Create and Execute Bash Shell Script
 _E_,Process,cmdline=sh -c "echo 'echo Hello from the Atomic Red Team' > /tmp/art.sh"
 _E_,Process,cmdline=sh -c "echo 'ping -c 4 8.8.8.8' >> /tmp/art.sh"
 _E_,Process,cmdline=chmod +x /tmp/art.sh
@@ -111,13 +111,13 @@ _E_,File,CHMOD,mode=+x,path=/tmp/art.sh
 FYI,When ICMP netflows change is merged, uncomment netflow line
 #_E_,Netflow,ICMP:*->8.8.8.8:*
 
-T1059.004,linux,2,Command-Line Interface
+T1059.004,linux,d0c88567,Command-Line Interface
 ARG,script_url,https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.004/src/echo-art-fish.sh
 _E_,Process,cmdline=curl -sS #{script_url}
 FYI,TODO: host script on our own server rather than github
 _E_,Process,cmdline=bash
 _E_,Process,cmdline=wget --quiet -O - #{script_url}
-_E_,Process,cmdline=sh
+_E_,Process,cmdline=bash
 # TODO : need to make telemcat match hostname and/or ipv4/ipv6
 _E_,Netflow,TCP:*->*.githubusercontent.com:443,ipv4=TCP:*->185.199.*:443
 _E_,File,WRITE,path=/tmp/art-fish.txt

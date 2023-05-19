@@ -183,7 +183,7 @@ T1552,linux,1,AWS - Retrieve EC2 Password Data using stratus
 
 # T1552.001 Unsecured Credentials: Credentials In Files ========
 
-T1552.001,linux,2,Extract passwords with grep
+T1552.001,linux,bd4cf0d1,Extract passwords with grep
 ARG,file_path,/tmp/
 _E_,Process,cmdline~=grep -ri password 
 
