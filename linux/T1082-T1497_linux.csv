@@ -1,9 +1,9 @@
-T1082,linux,3,List OS Information
+T1082,linux,cccb070c,List OS Information
 _E_,Process,cmdline*=cat /etc/.*-release
 _E_,Process,cmdline~=uptime
 _E_,File,READ,path*=/etc/.*-release
 
-T1082,linux,4,Linux VM Check via Hardware
+T1082,linux,31dad7ad,Linux VM Check via Hardware
 _E_,Process,cmdline*=cat .*/dmi/id/bios_version
 _E_,Process,cmdline*=cat .*/dmi/id/product_name
 _E_,Process,cmdline*=grep -i .*Droplet
@@ -18,65 +18,65 @@ _E_,Process,cmdline*=grep -i .*vmware
 _E_,Process,cmdline~=lspci
 _E_,Process,cmdline~=lscpu
 
-T1082,linux,5,Linux VM Check via Kernel Modules
+T1082,linux,8057d484,Linux VM Check via Kernel Modules
 _E_,Process,cmdline~=lsmod
 _E_,Process,cmdline*=grep.*vbox
 _C_,Process,Pipe,0,1
 # since there are 5 different lsmod|grep, validating correlation may be challenge
 
-T1082,linux,7,Hostname Discovery
+T1082,linux,486e88ea,Hostname Discovery
 _E_,Process,cmdline=hostname
 
-T1082,linux,11,Environment variables discovery on macos and linux
+T1082,linux,fcbdd43f,Environment variables discovery on macos and linux
 _E_,Process,cmdline=env
 
-T1082,linux,24,Linux List Kernel Modules
+T1082,linux,034fe21c,Linux List Kernel Modules
 _E_,Process,cmdline~=lsmod
 _E_,Process,cmdline~=kmod list
 _E_,File,READ,path=/proc/modules
 
-T1083,linux,3,Nix File and Directory Discovery
+T1083,linux,ffc8b249,Nix File and Directory Discovery
 _E_,Process,"cmdline~=file "
 #_E_,Process,"cmdline~=locate "
 _E_,Process,cmdline~=find . -type f
 _E_,Process,cmdline~=ls -R
 _E_,Process,cmdline~=which sh
 
-T1083,linux,4,Nix File and Directory Discovery 2
+T1083,linux,13c5e1ae,Nix File and Directory Discovery 2
 _E_,Process,cmdline~=cat /etc/mtab
 _E_,Process,cmdline~=find . -type f -name
 _E_,File,READ,/etc/mtab
 
 # T1087.001 Account Discovery: Local Account ==============
 
-T1087.001,linux,1,Enumerate all accounts (Local)
+T1087.001,linux,f8aab3dd,Enumerate all accounts (Local)
 _E_,Process,cmdline~=cat /etc/passwd
 _E_,File,READ,/etc/passwd
 
-T1087.001,linux,2,View sudoers access
+T1087.001,linux,fed9be70,View sudoers access
 _E_,Process,cmdline~=cat /etc/sudoers
 _E_,File,READ,/etc/sudoers
 
-T1087.001,linux,3,View accounts with UID 0
+T1087.001,linux,c955a599,View accounts with UID 0
 _E_,Process,cmdline*=grep .*x:0:.* /etc/passwd
 _E_,File,READ,/etc/passwd
 
-T1087.001,linux,4,List opened files by user
+T1087.001,linux,7e46c7a5,List opened files by user
 _E_,Process,cmdline~=id -u -n
 _E_,Process,cmdline~=lsof -u
 
-T1087.001,linux,5,Show if a user account has ever logged in remotely
+T1087.001,linux,0f0b6a29,Show if a user account has ever logged in remotely
 _E_,Process,cmdline~=lastlog
 _E_,File,WRITE,path=/tmp/T1087.001.txt
 _E_,File,READ,path*=/var/log/.tmp
 
-T1087.001,linux,6,Enumerate users and groups
+T1087.001,linux,e6f36545,Enumerate users and groups
 _E_,Process,cmdline=groups
 _E_,Process,cmdline=id
 
 # T1090.001 Proxy: Internal Proxy =================
 
-T1090.001,linux,1,Connection Proxy
+T1090.001,linux,0ac21132,Connection Proxy
 FYI,Mainly this test does an 'export http_proxy=127.0.0.1:8080' which is built-in
 # added a command which will have http_proxy in env vars
 # TODO: when http_proxy is in env vars, validate the env of process event
@@ -86,19 +86,19 @@ _E_,Process,cmdline~=ls -al /tmp/
 
 # T1090.003 Proxy: Multi-hop Proxy ===================
 
-T1090.003,linux,3,Tor Proxy Usage - Debian/Ubuntu
+T1090.003,linux,5ff9d047,Tor Proxy Usage - Debian/Ubuntu
 !!!,fix test prereq asking for password
 _E_,Process,cmdline=systemctl start tor
 
 # T1098.004 SSH Authorized Keys =====================
 
-T1098.004,linux,1,Modify SSH Authorized Keys
+T1098.004,linux,342cc723,Modify SSH Authorized Keys
 _E_,Process,cmdline~=~/.ssh/authorized_keys
 _E_,File,WRITE,path~=/.ssh/authorized_keys
 
 # T1105 Ingress Tool Transfer ========================
 
-T1105,linux,1,rsync remote file copy (push)
+T1105,linux,0fc6e977,rsync remote file copy (push)
 FYI,test differs from upstream - has password support and doesn't use ssh
 FYI,requires a remote rsync server
 ARG,local_path,/tmp/T1105_1_staging
@@ -109,7 +109,7 @@ ARG,remote_path,volume
 _E_,Process,cmdline~=rsync -r /tmp/
 _E_,Netflow,TCP:*->#{remote_host}:873
 
-T1105,linux,2,rsync remote file copy (pull) over ssh transport
+T1105,linux,3180f7d5,rsync remote file copy (pull) over ssh transport
 FYI,test differs from upstream - has ssh port option
 FYI,requires a remote rsync server
 ARG,local_path,/tmp/T1105_2_dest
@@ -120,7 +120,7 @@ ARG,remote_path,/tmp
 _E_,Process,cmdline~=rsync -av -e "ssh -p #{remote_port} -l #{username}" #{remote_host}:#{remote_path} #{local_path}
 _E_,Netflow,TCP:*->#{remote_host}:#{remote_port}
 
-T1105,linux,3,scp remote file copy (push)
+T1105,linux,83a49600,scp remote file copy (push)
 ARG,local_file,/tmp/T1105_4_src
 ARG,remote_host,$SERVER[rsync_ssh].addr
 ARG,remote_port,$SERVER[rsync_ssh].port
@@ -129,7 +129,7 @@ ARG,remote_path,/tmp/scp_remote_T1105.txt
 _E_,Process,cmdline~=scp -P #{remote_port} #{local_file} #{username}@#{remote_host}:#{remote_path}
 _E_,Netflow,TCP:*->#{remote_host}:#{remote_port}
 
-T1105,linux,4,scp remote file copy (pull)
+T1105,linux,b9d22b9a,scp remote file copy (pull)
 ARG,local_path,/tmp/T1105_4_dest
 ARG,remote_host,$SERVER[rsync_ssh].addr
 ARG,remote_port,$SERVER[rsync_ssh].port
@@ -138,7 +138,7 @@ ARG,remote_file,/tmp/scp_remote_T1105.txt
 _E_,Process,cmdline~=scp -P #{remote_port} #{username}@#{remote_host}:#{remote_file} #{local_path}
 _E_,Netflow,TCP:*->#{remote_host}:#{remote_port}
 
-T1105,linux,5,sftp remote file copy (push)
+T1105,linux,f564c297,sftp remote file copy (push)
 ARG,local_file,/tmp/T1105_sftp.txt
 ARG,remote_host,$SERVER[rsync_ssh].addr
 ARG,remote_port,$SERVER[rsync_ssh].port
@@ -147,7 +147,7 @@ ARG,remote_path,/tmp/
 _E_,Process,cmdline~=sftp -P #{remote_port} #{username}@#{remote_host}:#{remote_path}
 _E_,Netflow,TCP:*->#{remote_host}:#{remote_port}
 
-T1105,linux,6,sftp remote file copy (pull)
+T1105,linux,0139dba1,sftp remote file copy (pull)
 ARG,local_path,/tmp/T1105_6_dest
 ARG,remote_host,$SERVER[rsync_ssh].addr
 ARG,remote_port,$SERVER[rsync_ssh].port
@@ -157,12 +157,12 @@ _E_,Process,cmdline~=sftp -P #{remote_port} #{username}@#{remote_host}:#{remote_
 _E_,Netflow,TCP:*->#{remote_host}:#{remote_port}
 _E_,File,WRITE,path=#{local_path}
 
-T1105,linux,14,whois file download
+T1105,linux,c99a829f,whois file download
 !!!,TODO: setup a whois server, install whois binary on target
 _E_,Process,cmdline~=whois -h 
 _E_,Netflow,TCP:*->localhost:8443
 
-T1105,linux,27,Linux Download File and Run
+T1105,linux,bdc373c5,Linux Download File and Run
 ARG,remote_url,https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1105/src/atomic.sh
 ARG,payload_name,/tmp/T1105_26_atomic
 _E_,Process,cmdline~=curl -s -L -o #{payload_name} #{remote_url}
@@ -173,106 +173,106 @@ _E_,Netflow,TCP:*->*githubusercontent.com:443,ipv4=TCP:*->185.199.*:443
 # T1110.001  Brute Force: Password Guessing ================
 # NOTE: need better tests here
 
-T1110.001,linux,4,SUDO brute force Debian
+T1110.001,linux,ba1bf0b6,SUDO brute force Debian
 FYI,improved test merged Jan 5 2023
 # TODO: agent should provide SUDO_xx env variables
 _E_,Process,env~=SUDO_ASKPASS,cmdline~=sudo -k -A
 # TODO: agent should provide sudo auth events
 _E_,Auth,type=sudo,status=fail
 
-T1110.001,linux,5,SUDO brute force Redhat
+T1110.001,linux,4097bc00,SUDO brute force Redhat
 !!!,TODO fix this to be like the Debian test
 
 # T1110.004 Brute Force: Credential Stuffing ===================
 
-T1110.004,linux,1,SSH Credential Stuffing From Linux
+T1110.004,linux,4f08197a,SSH Credential Stuffing From Linux
 !!!,is prompting for password - get my fix for this
 _E_,Process,cmdline*=sshpass -p .* ssh .*@localhost,copies=3
 _E_,Netflow,TCP:*->localhost:22,copies=3
 
 # T1113 Screen Capture ======================
 
-T1113,linux,3,X Windows Capture
+T1113,linux,8206dd0c,X Windows Capture
 _E_,Process,cmdline~=xwd -root -out /tmp/T1113_desktop.xwd
 _E_,File,WRITE,/tmp/T1113_desktop.xwd
 FYI,Is there a file in /dev/ we can monitor?
 
-T1113,linux,4,Capture Linux Desktop using Import Tool
+T1113,linux,9cd1cccb,Capture Linux Desktop using Import Tool
 _E_,Process,cmdline~=import -window root /tmp/T1113_desktop.png
 _E_,File,WRITE,/tmp/T1113_desktop.png
 
 # T1132.001 Data Encoding: Standard Encoding =============
 
-T1132.001,linux,1,Base64 Encoded hostname curl request
+T1132.001,linux,1164f70f,Base64 Encoded hostname curl request
 !!!,this will make DNS request to MTExLTExLTExMTE=.redcanary.com which will fail
 _E_,Process,cmdline=base64
 _E_,Process,cmdline~=curl -XPOST
 
 # T1135 Network Share Discovery ======================
 
-T1135,linux,2,Network Share Discovery - linux
+T1135,linux,875805bc,Network Share Discovery - linux
 _E_,Process,cmdline=smbstatus --shares
 
 # T1136.001 Create Account: Local Account ================
 
-T1136.001,linux,1,Create a user account on a Linux system
+T1136.001,linux,40d8eabd,Create a user account on a Linux system
 _E_,Process,cmdline=useradd -M -N -r -s /bin/bash -c evil_account evil_user
 FYI,what files in home directory will we see in File events?
 
-T1136.001,linux,5,Create a new user in Linux with `root` UID and GID.
+T1136.001,linux,a1040a30,Create a new user in Linux with `root` UID and GID.
 _E_,Process,cmdline=useradd -g 0 -M -d /root -s /bin/bash butter
 _E_,Process,cmdline~=chpasswd
 _E_,Process,cmdline~=passwd --stdin
 
 # T1140 Deobfuscate/Decode Files or Information =====================
 
-T1140,linux,3,Base64 decoding with Python
+T1140,linux,356dc0e8,Base64 decoding with Python
 _E_,Process,cmdline*=python.? -c .*base64
 FYI,if script is in a file, we can only detect if we read the script file
 
-T1140,linux,4,Base64 decoding with Perl
+T1140,linux,6604d964,Base64 decoding with Perl
 _E_,Process,cmdline*=perl? -?e .*base64
 
-T1140,linux,5,Base64 decoding with shell utilities
+T1140,linux,b4f6a567,Base64 decoding with shell utilities
 _E_,Process,cmdline~=base64 -d
 
-T1140,linux,6,Hex decoding with shell utilities
+T1140,linux,005943f9,Hex decoding with shell utilities
 _E_,Process,cmdline~=xxd -r -p
 
 # T1176 Browser Extensions ===========================
 
-T1176,linux,1,Chrome (Developer Mode)
+T1176,linux,3ecd790d,Chrome (Developer Mode)
 !!!,manual - are there files we can see on disk after install?
 
-T1176,linux,2,Chrome (Chrome Web Store)
+T1176,linux,4c83940d,Chrome (Chrome Web Store)
 !!!,manual - are there files we can see on disk after install?
 
-T1176,linux,3,Firefox
+T1176,linux,cb790029,Firefox
 !!!,manual - are there files we can see on disk after install?
 
 # T1201 Password Policy Discovery =====================
 
-T1201,linux,1,Examine password complexity policy - Ubuntu
+T1201,linux,085fe567,Examine password complexity policy - Ubuntu
 !!!,os=ubuntu|debian
 _E_,Process,cmdline~=cat /etc/pam.d/common-password
 _E_,File,READ,path=/etc/pam.d/common-password
 
-T1201,linux,2,Examine password complexity policy - CentOS/RHEL 7.x
+T1201,linux,78a12e65,Examine password complexity policy - CentOS/RHEL 7.x
 !!!,os=centos:7,redhat:7
 _E_,Process,cmdline~=cat /etc/security/pwquality.conf
 _E_,File,READ,path=/etc/security/pwquality.conf
 
-T1201,linux,3,Examine password complexity policy - CentOS/RHEL 6.x
+T1201,linux,6ce12552,Examine password complexity policy - CentOS/RHEL 6.x
 !!!,skip
 
-T1201,linux,4,Examine password expiration policy - All Linux
+T1201,linux,7c86c55c,Examine password expiration policy - All Linux
 !!!,!os=centos:7,!redhat:7
 _E_,Process,cmdline~=cat /etc/login.defs
 _E_,File,READ,path=/etc/login.defs
 
 # T1217 Browser Bookmark Discovery ======================
 
-T1217,linux,1,List Mozilla Firefox Bookmark Database Files on Linux
+T1217,linux,3a41f169,List Mozilla Firefox Bookmark Database Files on Linux
 _E_,Process,cmdline*=find.*mozilla/firefox.*\.sqlite.*-exec echo
 _E_,File,READ,path*=firefox/.*/places.sqlite
 # ./.mozilla/firefox/y3itoojm.default-release/places.sqlite
@@ -280,61 +280,61 @@ _E_,File,READ,path*=firefox/.*/places.sqlite
 
 # T1222.002. File Permissions Modification Linux and Mac ========
 
-T1222.002,linux,1,chmod - Change file or folder mode (numeric mode)
+T1222.002,linux,34ca1464,chmod - Change file or folder mode (numeric mode)
 FYI,we have changes to create dependencies and cleanup not in upstream
 _E_,Process,cmdline~=chmod 755 #{file_or_folder}
 _E_,File,CHMOD,mode=755,path=#{file_or_folder}
 
-T1222.002,linux,2,chmod - Change file or folder mode (symbolic mode)
+T1222.002,linux,fc9d6695,chmod - Change file or folder mode (symbolic mode)
 _E_,Process,cmdline~=chmod a+w #{file_or_folder}
 _E_,File,CHMOD,mode=a+w,path=#{file_or_folder}
 
-T1222.002,linux,3,chmod - Change file or folder mode (numeric mode) recursively
+T1222.002,linux,ea79f937,chmod - Change file or folder mode (numeric mode) recursively
 _E_,Process,cmdline~=chmod -R 755 #{folder}
 _E_,File,CHMOD,mode=755,path~=#{folder}
 
-T1222.002,linux,4,chmod - Change file or folder mode (symbolic mode) recursively
+T1222.002,linux,0451125c,chmod - Change file or folder mode (symbolic mode) recursively
 _E_,Process,cmdline~=chmod -R a+w #{folder}
 _E_,File,CHMOD,mode=a+w,path~=#{folder}
 
-T1222.002,linux,5,chown - Change file or folder ownership and group
+T1222.002,linux,d169e71b,chown - Change file or folder ownership and group
 ARG,owner,nobody
 _E_,Process,cmdline~=chown #{owner}:root #{file_or_folder}
 _E_,File,CHOWN,owner=#{owner},group=root,path=#{file_or_folder}
 
-T1222.002,linux,6,chown - Change file or folder ownership and group recursively
+T1222.002,linux,b78598be,chown - Change file or folder ownership and group recursively
 ARG,owner,nobody
 _E_,Process,cmdline~=chown -R #{owner}:#{group} #{folder}
 _E_,File,CHOWN,owner=#{owner},group=#{group},path~=#{folder}
 
-T1222.002,linux,7,chown - Change file or folder mode ownership only
+T1222.002,linux,967ba79d,chown - Change file or folder mode ownership only
 ARG,owner,nobody
 _E_,Process,cmdline~=chown #{owner} #{file_or_folder}
 _E_,File,CHOWN,owner=#{owner},path=#{file_or_folder}
 # how to test that file event shows no change in group?
 
-T1222.002,linux,8,chown - Change file or folder ownership recursively
+T1222.002,linux,3b015515,chown - Change file or folder ownership recursively
 ARG,owner,nobody
 _E_,Process,cmdline~=chown -R #{owner} #{folder}
 _E_,File,CHOWN,owner=#{owner},path~=#{folder}
 
-T1222.002,linux,9,chattr - Remove immutable file attribute
+T1222.002,linux,e7469fe2,chattr - Remove immutable file attribute
 FYI,this changes a system file!
 ARG,file_to_modify,/etc/T1222.002_9_immutable
 _E_,Process,cmdline~=chattr -i #{file_to_modify}
 _E_,File,CHATTR,attr=-i,path=#{file_to_modify}
 
-T1222.002,linux,10,Chmod through c script
+T1222.002,linux,973631cf,Chmod through c script
 _E_,Process,cmdline~=#{compiled_file}
 _E_,File,CHMOD,path~=#{target_file}
 
-T1222.002,linux,11,Chown through c script
+T1222.002,linux,18592ba1,Chown through c script
 _E_,Process,cmdline~=#{compiled_file}
 _E_,File,CHOWN,path=#{target_file}
 
 # T1485 Data Destruction ================
 
-T1485,linux,2,macOS/Linux - Overwrite file with DD
+T1485,linux,38deee99,macOS/Linux - Overwrite file with DD
 !!!,file does not exist- need dependency steps?
 ARG,file_to_overwrite,/var/log/syslog.T1485
 _E_,Process,cmdline~=dd of=/var/log/syslog.T1485 if=/dev/zero count=
@@ -342,21 +342,21 @@ _E_,File,WRITE,path=/var/log/syslog.T1485
 
 # T1486 Data Encrypted for Impact ==============
 
-T1486,linux,1,Encrypt files using gpg (Linux)
+T1486,linux,7b8ce084,Encrypt files using gpg (Linux)
 _E_,Process,cmdline~=gpg --batch --yes --passphrase-fd 0 --cipher-algo AES-256
 _E_,File,READ,path=/etc/passwd
 _E_,File,WRITE,path=/tmp/passwd.gpg
 
-T1486,linux,2,Encrypt files using 7z (Linux)
+T1486,linux,53e6735a,Encrypt files using 7z (Linux)
 !!!,get_prereq_command is broken. also, just zips, does not encrypt?
 
-T1486,linux,3,Encrypt files using ccrypt (Linux)
+T1486,linux,08cbf59f,Encrypt files using ccrypt (Linux)
 FYI,If running as root, the file is /etc/passwd
 _E_,Process,cmdline~=ccencrypt ~/.bash_history ~/.bash_history.cpt
 _E_,File,READ,path~=~/.bash_history
 _E_,File,WRITE,path~=~/.bash_history.cpt
 
-T1486,linux,4,Encrypt files using openssl (Linux)
+T1486,linux,142752dc,Encrypt files using openssl (Linux)
 FYI,If running as root, the file is /etc/passwd
 _E_,Process,cmdline~=openssl rsautl -encrypt -inkey
 _E_,File,READ,path~=/etc/passwd
@@ -364,7 +364,7 @@ _E_,File,WRITE,path~=/tmp/passwd.zip
 
 # T1496 Resource Hijacking ===========================
 
-T1496,linux,1,macOS/Linux - Simulate CPU Load with Yes
+T1496,linux,904a5a0e,macOS/Linux - Simulate CPU Load with Yes
 ARG,seconds,30
 FYI,without MR current test will run forever
 _E_,Process,cmdline~=yes > /dev/null
@@ -373,7 +373,7 @@ _E_,Alert,ProcessHighCpu
 # T1497.001 Virtualization/Sandbox Evasion: System Checks ==========
 # overlaps with other system info gathering tests
 
-T1497.001,linux,1,Detect Virtualization Environment (Linux)
+T1497.001,linux,dfbd1a21,Detect Virtualization Environment (Linux)
 FYI,without MR, current test will not do dmidecode if systemd-detect-virt is successful
 _E_,Process,cmdline~=systemd-detect-virt
 _E_,Process,cmdline~=dmidecode

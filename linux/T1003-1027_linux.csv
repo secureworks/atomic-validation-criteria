@@ -1,6 +1,6 @@
 # T1003.007
 
-T1003.007,linux,1,Dump individual process memory with sh (Local)
+T1003.007,linux,7e91138a,Dump individual process memory with sh (Local)
 # BUILTIN wont see: _E_,Process,cmdline~=echo "The password is"
 _E_,Process,cmdline~=pgrep -n -f
 _E_,Process,cmdline*=grep -E.*/proc/[0-9]*/maps
@@ -8,12 +8,12 @@ _E_,Process,cmdline*=dd if=/proc/[0-9]*/mem of
 _E_,File,READ,path*=/proc/[0-9]*/maps
 _E_,File,READ,path*=/proc/[0-9]*/mem
 
-T1003.007,linux,2,Dump individual process memory with Python (Local)
+T1003.007,linux,437b2003,Dump individual process memory with Python (Local)
 _E_,File,READ,path*=/proc/[0-9]*/maps
 _E_,File,READ,path*=/proc/[0-9]*/mem
 _E_,Process,cmdline*=python.*/T1003.007/src/dump_heap.py
 
-T1003.007,linux,3,Capture Passwords with MimiPenguin
+T1003.007,linux,a27418de,Capture Passwords with MimiPenguin
 !!!,This runs out of resources in my VM - find way to limit it
 _E_,File,READ,path*=/proc/[0-9]*/cmdline
 _E_,File,READ,path*=/proc/[0-9]*/maps
@@ -24,39 +24,39 @@ _E_,File,READ,path=/etc/shadow
 
 # T1003.008
 
-T1003.008,linux,1,Access /etc/shadow (Local)
+T1003.008,linux,3723ab77,Access /etc/shadow (Local)
 _E_,Process,cmdline~=cat /etc/shadow
 _E_,File,READ,path=/etc/shadow
 
-T1003.008,linux,2,Access /etc/passwd (Local)
+T1003.008,linux,60e860b6,Access /etc/passwd (Local)
 _E_,Process,cmdline~=cat /etc/passwd
 _E_,File,READ,path=/etc/passwd
 
-T1003.008,linux,3,"Access /etc/{shadow,passwd} with a standard bin that's not cat"
+T1003.008,linux,df1a55ae,"Access /etc/{shadow,passwd} with a standard bin that's not cat"
 _E_,Process,cmdline~=ed > #{output_file}
 _E_,File,READ,path=/etc/passwd
 _E_,File,READ,path=/etc/shadow
 
-T1003.008,linux,4,"Access /etc/{shadow,passwd} with shell builtins"
+T1003.008,linux,f5aa6543,"Access /etc/{shadow,passwd} with shell builtins"
 _E_,File,READ,path=/etc/passwd
 _E_,File,READ,path=/etc/shadow
 
 # T1007, T1014
 
-T1007,linux,3,System Service Discovery - systemctl
+T1007,linux,f4b26bce,System Service Discovery - systemctl
 _E_,Process,cmdline~=systemctl --type=service
 
-T1014,linux,1,Loadable Kernel Module based Rootkit
+T1014,linux,dfb50072,Loadable Kernel Module based Rootkit
 _E_,Process,cmdline*=insmod.*T1014.ko
 FYI,TODO: add kernel module load telemetry
 #_E_,Module,Kernel,path~=T1014.ko
 
-T1014,linux,2,Loadable Kernel Module based Rootkit
+T1014,linux,75483ef8,Loadable Kernel Module based Rootkit
 _E_,Process,cmdline*=modprobe T1014
 FYI,TODO: add kernel module load telemetry
 #_E_,Module,Kernel,path~=T1014.ko
 
-T1014,linux,3,dynamic-linker based rootkit (libprocesshider)
+T1014,linux,1338bf0c,dynamic-linker based rootkit (libprocesshider)
 _E_,Process,cmdline~=/evil_script.py localhost -c 5
 _E_,Process,env~=LD_PRELOAD=,cmdline~=pgrep -l evil_script.py
 # TODO: agent is not providing file events for directory.
@@ -77,7 +77,7 @@ FYI,processes named 'evil_script.py'
 # 00000000000014b9 g    DF .text	000000000000013e  Base        readdir64
 # 00000000000015f7 g    DF .text	000000000000013e  Base        readdir
 
-T1014,linux,4,Loadable Kernel Module based Rootkit (Diamorphine)
+T1014,linux,0b996469,Loadable Kernel Module based Rootkit (Diamorphine)
 _E_,Process,cmdline~=modprobe #{rootkit_name}
 _E_,Process,cmdline~=ping -c 5 localhost
 # it appears that the kernel module hides the 'kill -31' as well?
@@ -87,7 +87,7 @@ _E_,Process,cmdline~=ping -c 5 localhost
 
 # T1016, T1018
 
-T1016,linux,3,System Network Configuration Discovery
+T1016,linux,c141bbdb,System Network Configuration Discovery
 _E_,Process,cmdline~=arp -a
 _E_,Process,cmdline~=ifconfig
 _E_,Process,cmdline~=ip addr
@@ -103,22 +103,22 @@ _E_,Process,cmdline~=traceroute google.com
 T1016.001,linux,3,Network Discovery Get
 _E_,Process,cmdline~=curl google.com --request GET
 
-T1018,linux,6,Remote System Discovery - arp nix
+T1018,linux,acb6b1ff,Remote System Discovery - arp nix
 _E_,Process,cmdline~=arp -a
 
-T1018,linux,7,Remote System Discovery - sweep
+T1018,linux,96db2632,Remote System Discovery - sweep
 ARG,start_host,1
 ARG,stop_host,3
 ARG,subnet,10.0.0
 _E_,Process,cmdline~=ping -c 1
 
-T1018,linux,12,Remote System Discovery - ip neighbour
+T1018,linux,158bd4dd,Remote System Discovery - ip neighbour
 _E_,Process,cmdline~=ip neighbour show
 
-T1018,linux,13,Remote System Discovery - ip route
+T1018,linux,1a4ebe70,Remote System Discovery - ip route
 _E_,Process,cmdline~=ip route show
 
-T1018,linux,14,Remote System Discovery - ip tcp_metrics
+T1018,linux,6c2da894,Remote System Discovery - ip tcp_metrics
 _E_,Process,cmdline~=ip tcp_metrics show
 
 # T1021.004 SSH - This is more for remote users logging into the host running
@@ -132,46 +132,46 @@ _E_,Process,cmdline~=ip tcp_metrics show
 
 # T1027
 
-T1027,linux,1,Decode base64 Data into Script
+T1027,linux,f45df6be,Decode base64 Data into Script
 _E_,Process,cmdline~=base64 -d
 # > /tmp/art.sh
 _E_,Process,cmdline~=chmod +x /tmp/art.sh
 _E_,File,CREATE,path=/tmp/art.sh
 _E_,Process,cmdline~=sh /tmp/art.sh
 
-T1027.001,linux,1,Pad Binary to Change Hash - Linux/macOS dd
+T1027.001,linux,ffe2346c,Pad Binary to Change Hash - Linux/macOS dd
 _E_,Process,cmdline~=dd if=/dev/zero bs=1 count=1
 # TODO: how to detect redirects to file >> /tmp/evil-binary
 _E_,File,WRITE,path=/tmp/evil-binary
 # TODO: if file has execute bit set, tag with T1027.001
 
-T1027.002,linux,1,Binary simply packed by UPX (linux)
+T1027.002,linux,11c46cd8,Binary simply packed by UPX (linux)
 _E_,Process,cmdline~=#{bin_path} /tmp/packed_bin
 _E_,File,CREATE,path=/tmp/packed_bin
 _E_,Process,cmdline=/tmp/packed_bin
 FYI,The alert only happens if file is new and is not in hash cache
 _E_,Alert,ExecutableEntropy,path=/tmp/packed_bin
 
-T1027.002,linux,2,"Binary packed by UPX, with modified headers (linux)"
+T1027.002,linux,f06197f8,"Binary packed by UPX, with modified headers (linux)"
 _E_,Process,cmdline~=#{bin_path} /tmp/packed_bin
 _E_,File,CREATE,path=/tmp/packed_bin
 _E_,Process,cmdline=/tmp/packed_bin
 FYI,The alert only happens if file is new and is not in hash cache
 _E_,Alert,ExecutableEntropy,path=/tmp/packed_bin
 
-T1027.004,linux,3,C compile
+T1027.004,linux,d0377aa6,C compile
 _E_,Process,cmdline~=gcc #{input_file}
 #.*T1027.004/src/T1027-004-test.c
 _E_,Process,cmdline~=clang #{input_file}
 #.*T1027.004/src/T1027-004-test.c
 _E_,Process,cmdline~=./a.out
 
-T1027.004,linux,4,CC compile
+T1027.004,linux,da97bb11,CC compile
 _E_,Process,cmdline~=g++ #{input_file}
 #.*T1027.004/src/T1027-004-test.cc
 _E_,Process,cmdline~=clang++ #{input_file}
 #.*T1027.004/src/T1027-004-test.cc
 _E_,Process,cmdline~=./a.out
 
-T1027.004,linux,5,Go compile
+T1027.004,linux,78bd3fa7,Go compile
 _E_,Process,cmdline*=go run .*T1027-004-test.go
