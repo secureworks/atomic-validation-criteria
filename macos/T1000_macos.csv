@@ -1,0 +1,31 @@
+T1040,macos,9d04efee,Packet Capture macOS using tcpdump or tshark
+ARG,interface,en0
+_E_,Process,cmdline~=tcpdump -c 5 -nnni
+_E_,Process,cmdline~=tshark -c 5
+
+T1046,macos,68e907da,Port Scan
+FYI,Auto-generated please review
+ARG,host,$gateway
+_E_,FileMod,WRITE,path~=/dev/tcp/
+
+T1046,macos,515942b0,Port Scan Nmap
+ARG,host,$gateway
+ARG,port,80
+ARG,network_range,$gateway/32
+_E_,Process,cmdline~=nmap -sS
+_E_,Process,cmdline~=telnet
+_E_,Process,cmdline~=nc -nv #{host} #{port}
+
+T1048,macos,f6786cc8,Exfiltration Over Alternative Protocol - SSH
+ARG,domain,$SERVER[ssh].host
+_E_,Process,cmdline~=ssh #{domain}
+
+T1048,macos,7c3cb337,Exfiltration Over Alternative Protocol - SSH
+ARG,user_name,atomic
+ARG,password,atomic
+ARG,domain,target.example.com
+_E_,Process,cmdline~=tar czpf -
+_E_,Process,cmdline~=openssl des3 -salt -pass
+_E_,Process,cmdline~=ssh #{user_name}@#{domain}
+# TODO: pipe chain correlation
+

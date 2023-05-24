@@ -1,0 +1,40 @@
+T1053.003,macos,435057fb,Cron - Replace crontab with referenced file
+ARG,command,/tmp/evil.sh
+ARG,tmp_cron,/tmp/T1053.003_435_replacedcrontab
+_E_,Process,cmdline~=crontab -l
+_E_,FileMod,WRITE,path~=#{tmp_cron}
+_E_,Process,cmdline~=crontab #{tmp_cron}
+# prereq does not create /tmp/evil.sh, so don't expect it to run
+
+T1053.003,macos,b7d42afa,Cron - Add script to all cron subfolders
+!!!,skip - there are no /etc/cron.hourly, etc.  macos uses /var/at/
+
+T1056.002,macos,76628574,AppleScript - Prompt User for Password
+_E_,Process,exepath~=osascript,cmdline~=tell app "System Preferences" to activate,cmdline~=to display dialog
+
+
+T1059.002,macos,1,AppleScript
+_E_,Process,cmdline~=osascript
+
+T1059.002,macos,2,AppleScript cURL
+ARG,script_url,http://localhost/whoami.scpt
+_E_,Process,exepath~=bash
+_E_,Process,cmdline=curl -s #{script_url}
+_E_,Process,cmdline=osascript
+_C_,Process,Pipe,1,2
+_C_,Process,PTree,0->1,0->2
+
+T1059.002,macos,3,AppleScript Shell Script
+_E_,Process,cmdline=osascript #{path_malicious_shell_scpt}
+
+T1059.002,macos,4,AppleScript Dialog Prompts
+_E_,Process,exepath~=osascript,cmdline*=(-e).*((display dialog)|(display notification)|(display alert)).*((password)|(credential))
+
+T1059.002,macos,5,AppleScript Privilege Escalation
+_E_,Process,exepath~=osascript,cmdline*=(-e).*(administrator privileges)
+
+T1059.002,macos,6,AppleScript OSACompile Run Only
+_E_,Process,exepath~=bash
+_E_,Process,exepath~=osacompile,cmdline*=(-x).*(-e)
+_E_,Process,exepath~=osascript
+_C_,Process,PTree,0->1,0->2
