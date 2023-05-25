@@ -1,8 +1,5 @@
 T1027,windows,2,Execute base64-encoded PowerShell
-_E_,Process,cmdline~=$OriginalCommand 
-_E_,Process,cmdline~=$Bytes = [System.Text.Encoding]::Unicode.GetBytes
-_E_,Process,cmdline~=$EncodedCommand =[Convert]::ToBase64String 
-_E_,Process,cmdline~=powershell.exe -EncodedCommand
+_E_,Process,cmdline*=powershell.exe.? -EncodedCommand
 
 T1047,windows,1,Windows Management Instrumentation
 _E_,Process,cmdline~=wmic useraccount get /ALL /format:csv
