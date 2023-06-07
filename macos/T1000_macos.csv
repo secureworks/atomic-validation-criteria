@@ -29,3 +29,74 @@ _E_,Process,cmdline~=openssl des3 -salt -pass
 _E_,Process,cmdline~=ssh #{user_name}@#{domain}
 # TODO: pipe chain correlation
 
+T1070.002,macos,989cc1b1,rm -rf
+!!!,skip - desctructive
+_E_,Process,cmdline~=rm -rf /private/var/log/system.log*
+_E_,Process,cmdline~=rm -rf /private/var/audit/*
+_E_,FileMod,DELETE,path~=/private/var/log/system
+_E_,FileMod,DELETE,path~=/private/var/audit
+
+T1070.002,macos,653d39cd,Delete log files using built-in log utility
+!!!,skip - desctructive
+_E_,Process,cmdline~=log erase --all
+_E_,Process,cmdline~=log erase --ttl
+_E_,Process,cmdline~=log erase --predicate
+
+T1070.002,macos,6290f8a8,Truncate system log files via truncate utility
+!!!,skip - desctructive
+_E_,Process,cmdline~=truncate -s 0 /var/log/system.log
+_E_,Process,cmdline~=truncate --size=0 /var/log/system.log
+_E_,FileMod,WRITE,path~=/var/log/system.log
+
+T1070.002,macos,c23bdb88,Delete log files via cat utility by appending /dev/null or /dev/zero
+!!!,skip - desctructive
+_E_,FileMod,WRITE,path~=/var/log/system.log
+
+T1070.002,macos,bc8eeb4a,System log file deletion via find utility
+!!!,skip - desctructive
+_E_,Process,cmdline~=find /var/log -name 'system.log.*' -exec rm {}
+_E_,Process,cmdline~=find /var/log/ -name "system.log.*" -exec shred -u -z -n 3 {}
+_E_,Process,cmdline~=find /var/log/ -name "system.log.*" -exec unlink {}
+_E_,FileMod,UNLINK,path~=/var/log/system.log
+
+T1070.002,macos,0208ea60,Overwrite macOS system log via echo utility
+!!!,skip - desctructive
+_E_,FileMod,WRITE,path~=/var/log/system.log
+
+T1070.002,macos,848e43b3,Real-time system log clearance/deletion
+!!!,skip - desctructive
+_E_,Process,cmdline~=log -f /var/log/system.log
+_E_,FileMod,WRITE,path~=/var/log/system.log
+
+T1070.002,macos,03013b4b,Delete system log files via unlink utility
+!!!,skip - desctructive
+_E_,Process,cmdline~=unlink /var/log/system.log
+_E_,FileMod,UNLINK,path~=/var/log/system.log
+
+T1070.002,macos,86f0e4d5,Delete system log files using shred utility
+!!!,skip - desctructive
+_E_,Process,cmdline~=shred -u -z -n 3 /var/log/system.log
+_E_,FileMod,UNLINK,path~=/var/log/system.log
+
+T1070.002,macos,b0768a5e,Delete system log files using srm utility
+!!!,skip - desctructive
+_E_,Process,cmdline~=srm /var/log/system.log
+_E_,Process,cmdline~=srm -r /var/log/
+_E_,FileMod,UNLINK,path~=/var/log/
+
+T1070.002,macos,810a465f,Delete system log files using OSAScript
+_E_,Process,cmdline*=osascript -e .do shell script .rm /var/log/system.log
+!!!,skip - desctructive
+_E_,FileMod,UNLINK,path~=/var/log/system.log
+
+T1070.002,macos,e62f8694,Delete system log files using Applescript
+_E_,Process,cmdline*=osascript -e .tell application .Finder. to delete POSIX file ./var/log/system
+!!!,skip - desctructive
+_E_,FileMod,UNLINK,path~=/var/log/system
+
+
+T1074.001,macos,39ce0303,Stage data from Discovery.sh
+ARG,output_file,/tmp/T1074.001_discovery.log
+_E_,Process,cmdline~=curl -s https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1074.001/src/Discovery.sh
+_E_,Process,cmdline~=bash -s
+_E_,Filemod,WRITE,path=#{output_file}
