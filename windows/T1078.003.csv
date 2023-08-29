@@ -1,5 +1,4 @@
 T1078.003,windows,a524ce99,Create local account with admin privileges
-FYI,Auto-generated please review
 ARG,password,-4RTisCool!-321
 _E_,Process,cmdline~=net user art-test /add
 _E_,Process,cmdline~=net user art-test #{password}
