@@ -1,0 +1,7 @@
+T1055.003,windows,578025d5,Thread Execution Hijacking
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=$notepad = Start-Process notepad -passthru
+_E_,AMSI,scan_content*=Start-Process .*atomics.*T1055.003.*bin.*InjectContext.exe
+_E_,AMSI,scan_content~=Start-Sleep -Seconds 5
+_E_,AMSI,scan_content~=Stop-Process $notepad.id
+
