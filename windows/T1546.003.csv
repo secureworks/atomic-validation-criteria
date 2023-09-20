@@ -1,5 +1,4 @@
 T1546.003,windows,3c64f177,Persistence via WMI Event Subscription - CommandLineEventConsumer
-FYI,Reviewed
 _E_,AMSI,app_name~=PowerShell
 _E_,AMSI,scan_content~=$FilterArgs = @{name='AtomicRedTeam-WMIPersistence-CommandLineEventConsumer-Example';
 _E_,AMSI,scan_content~=                EventNameSpace='root\CimV2';
@@ -31,7 +30,6 @@ _E_,ETW,event_data_list~=}
 _E_,ETW,event_data_list~=$FilterToConsumerBinding = New-CimInstance -Namespace root/subscription -ClassName __FilterToConsumerBinding -Property $FilterToConsumerArgs
 
 T1546.003,windows,fecd0dfd,Persistence via WMI Event Subscription - ActiveScriptEventConsumer
-FYI,Reviewed
 _E_,AMSI,app_name~=PowerShell
 _E_,AMSI,scan_content~=$FilterArgs = @{name='AtomicRedTeam-WMIPersistence-ActiveScriptEventConsumer-Example';
 _E_,AMSI,scan_content~=                EventNameSpace='root\CimV2';
@@ -71,7 +69,6 @@ _E_,ETW,event_data_list~=}
 _E_,ETW,event_data_list~=$FilterToConsumerBinding = Set-WmiInstance -Namespace 'root/subscription' -Class '__FilterToConsumerBinding' -Arguments $FilterToConsumerArgs
 
 T1546.003,windows,29786d7e,Windows MOFComp.exe Load MOF File
-FYI,Auto-generated please review
 ARG,mofcomp_path,C:\windows\system32\wbem\mofcomp.exe
 ARG,mof_file,PathToAtomicsFolder\T1546.003\src\T1546.003.mof
 _E_,Process,cmdline~=#{mofcomp_path}
