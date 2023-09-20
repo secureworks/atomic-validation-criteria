@@ -1,5 +1,4 @@
 T1546.015,windows,48117158,COM Hijacking - InprocServer32
-FYI,Reviewed
 ARG,clsid,{B5F8350B-0548-48B1-A6EE-88BD00B4A5E7}
 ARG,clsid_description,MSAA AccPropServices
 ARG,clsid_threading,Apartment
@@ -19,14 +18,12 @@ _E_,ETW,event_data_list~=New-ItemProperty -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{
 _E_,ETW,event_data_list~=Start-Process -FilePath "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList '-sta #{clsid}'
 
 T1546.015,windows,752191b1,Powershell Execute COM Object
-FYI,Reviewed
-E_,AMSI,app_name~=PowerShell
+_E_,AMSI,app_name~=PowerShell
 _E_,AMSI,scan_content~=$o= [activator]::CreateInstance([type]::GetTypeFromCLSID("9BA05972-F6A8-11CF-A442-00A0C90A8F39"))
 _E_,AMSI,scan_content~=$item = $o.Item()
 _E_,AMSI,scan_content~=$item.Document.Application.ShellExecute("cmd.exe","/c calc.exe","C:\windows\system32",$null,0)
 
 T1546.015,windows,123520cc,COM Hijacking with RunDLL32 (Local Server Switch)
-FYI,Auto-generated please review
 ARG,clsid_threading,Both
 ARG,dll_path,C:\Users\quantumuser\atomic-harness1\atomic-red-team\atomics\..\ExternalPayloads\T1546.015_calc.dll
 ARG,clsid,{B5F8350B-0548-48B1-A6EE-88BD00B4A5E7}
@@ -45,7 +42,6 @@ _E_,ETW,event_data_list~=New-ItemProperty -Path 'HKCU:\SOFTWARE\Classes\CLSID\#{
 _E_,ETW,event_data_list~=Start-Process -FilePath "C:\Windows\System32\RUNDLL32.EXE" -ArgumentList '-localserver #{clsid}'
 
 T1546.015,windows,33eacead,COM hijacking via TreatAs
-FYI,Reviewed
 _E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\AtomicTest /ve /T REG_SZ /d AtomicTest /f
 _E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\AtomicTest.1.00 /ve /T REG_SZ /d AtomicTest /f
 _E_,Process,cmdline~=reg.exe add HKEY_CURRENT_USER\SOFTWARE\Classes\AtomicTest\CLSID /ve /T REG_SZ /d {00000001-0000-0000-0000-0000FEEDACDC} /f
