@@ -1,5 +1,4 @@
 T1546.013,windows,090e5aa5,Append malicious start-process cmdlet
-FYI,Reviewed
 ARG,exe_path,calc.exe
 ARG,ps_profile,Microsoft.PowerShell_profile.ps1
 _E_,AMSI,app_name~=PowerShell
