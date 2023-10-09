@@ -1,0 +1,252 @@
+T1112,windows,1324796b,Modify Registry of Current User Profile - cmd
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced,value_name=HideFileExt
+
+T1112,windows,282f929a,Modify Registry of Local Machine - cmd
+FYI,Reviewed
+ARG,new_executable,calc.exe
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Run,value_name=SecurityHealth
+
+T1112,windows,c0413fb5,Modify registry to store logon credentials
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\SecurityProviders\WDigest,value_name=UseLogonCredential
+
+T1112,windows,cf447677,Add domain to Trusted sites Zone
+FYI,Reviewed
+ARG,bad_domain,bad-domain.com
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Domains\#{bad_domain}\bad-subdomain,value_name=https
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Domains\#{bad_domain}\bad-subdomain,value_name=http
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Domains\#{bad_domain}\bad-subdomain,value_name=*
+
+T1112,windows,15f44ea9,Javascript in registry
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings,value_name=T1112
+
+T1112,windows,f3a6cceb,Change Powershell Execution Policy to Bypass
+FYI,Reviewed
+ARG,default_execution_policy,Default
+_E_,AMSI,scan_content~=Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope LocalMachine,app_name~=PowerShell
+_E_,ETW,chan_name~=Microsoft-Windows-PowerShell,event_msg~=Creating Scriptblock text,event_data_list~=Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope LocalMachine
+
+T1112,windows,4f4e2f9f,BlackByte Ransomware Registry Changes - CMD
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System,value_name=LocalAccountTokenFilterPolicy
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System,value_name=EnableLinkedConnections
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\FileSystem,value_name=LongPathsEnabled
+
+T1112,windows,0b79c06f,BlackByte Ransomware Registry Changes - Powershell
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System,value_name=LocalAccountTokenFilterPolicy
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System,value_name=EnableLinkedConnections
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\FileSystem,value_name=LongPathsEnabled
+
+T1112,windows,ac34b0f7,Disable Windows Registry Tool
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system,value_name=DisableRegistryTools
+
+T1112,windows,d2561a6d,Disable Windows CMD application
+FYI,Reviewed - Does NOT validate because the powershell command to set this registry fails and status is TestRan
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\System,value_name=DisableCMD
+
+T1112,windows,af254e70,Disable Windows Task Manager application
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system,value_name=DisableTaskmgr
+
+T1112,windows,c0d6d67f,Disable Windows Notification Center
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\Explorer,value_name=DisableNotificationCenter
+
+T1112,windows,6e0d1131,Disable Windows Shutdown Button
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System,value_name=shutdownwithoutlogon
+
+T1112,windows,e246578a,Disable Windows LogOff Button
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoLogOff
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=StartMenuLogOff
+
+T1112,windows,d4a6da40,Disable Windows Change Password Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system,value_name=DisableChangePassword
+
+T1112,windows,3dacb0d2,Disable Windows Lock Workstation Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system,value_name=DisableLockWorkstation
+
+T1112,windows,93386d41,Activate Windows NoDesktop Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoDesktop
+
+T1112,windows,d49ff3cc,Activate Windows NoRun Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoRun
+
+T1112,windows,ffbb407e,Activate Windows NoFind Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoFind
+
+T1112,windows,a450e469,Activate Windows NoControlPanel Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoControlPanel
+
+T1112,windows,5e27bdb4,Activate Windows NoFileMenu Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoFileMenu
+
+T1112,windows,12f50e15,Activate Windows NoClose Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoClose
+
+T1112,windows,d29b7faf,Activate Windows NoSetTaskbar Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoSetTaskbar
+
+T1112,windows,4d72d4b1,Activate Windows NoTrayContextMenu Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoTrayContextMenu
+
+T1112,windows,20fc9daa,Activate Windows NoPropertiesMyDocuments Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=NoPropertiesMyDocuments
+
+T1112,windows,8023db1e,Hide Windows Clock Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=HideClock
+
+T1112,windows,a4637291,Windows HideSCAHealth Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=HideSCAHealth
+
+T1112,windows,3e757ce7,Windows HideSCANetwork Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=HideSCANetwork
+
+T1112,windows,8d85a5d8,Windows HideSCAPower Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=HideSCAPower
+
+T1112,windows,7f037590,Windows HideSCAVolume Group Policy Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=HideSCAVolume
+
+T1112,windows,795d3248,Windows Modify Show Compress Color And Info Tip Registry
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced,value_name=ShowInfoTip
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced,value_name=ShowCompColor
+
+T1112,windows,95b25212,Windows Powershell Logging Disabled
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging,value_name=EnableModuleLogging
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging,value_name=EnableScriptBlockLogging
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription,value_name=EnableTranscripting
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\PowerShell,value_name=EnableScripts
+
+T1112,windows,1dd59fb3,Windows Add Registry Value to Load Service in Safe Mode without Network
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\SafeBoot\Minimal\AtomicSafeMode
+
+T1112,windows,c173c948,Windows Add Registry Value to Load Service in Safe Mode with Network
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\SafeBoot\Network\AtomicSafeMode
+
+T1112,windows,003f466a,Disable Windows Toast Notifications
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotifications,value_name=ToastEnabled
+
+T1112,windows,45914594,Disable Windows Security Center Notifications
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\ImmersiveShell,value_name=UseActionCenterExperience
+
+T1112,windows,c30dada3,Suppress Win Defender Notifications
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows Defender\UX Configuration,value_name=Notification_Suppress
+
+T1112,windows,86677d0e,Allow RDP Remote Assistance Feature
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Terminal Server,value_name=fAllowToGetHelp
+
+T1112,windows,65704cd4,NetWire RAT Registry Key Creation
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Run,value_name=NetWire
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\NetWire,value_name=HostId
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\NetWire,value_name=Install Date
+
+T1112,windows,c375558d,Ursnif Malware Registry Key Creation
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=3A861D62-51E0-15700F2219A4,value_name=comsxRes
+
+T1112,windows,3448824b,Terminal Server Client Connection History Cleared
+FYI,Reviewed - Test fails
+_E_,REG,event_type=DELETEVALUEKEY,key_name~=SOFTWARE\Microsoft\Terminal Server Client\Default,value_name=MR9
+_E_,REG,event_type=DELETEKEY,key_name~=SOFTWARE\MICROSOFT\TERMINAL SERVER CLIENT\SERVERS
+
+T1112,windows,d2c9e41e,Disable Windows Error Reporting Settings
+FYI,Reviewed 
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows Defender\Reporting,value_name=DisableEnhancedNotifications
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\NetWire,value_name=Install Date
+
+T1112,windows,71db768a,DisallowRun Execution Of Certain Applications
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer,value_name=DisallowRun
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun,value_name=art1
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun,value_name=art2
+
+T1112,windows,fe7974e5,Enabling Restricted Admin Mode via Command_Prompt
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Lsa,value_name=DisableRestrictedAdmin
+
+T1112,windows,39f1f378,Mimic Ransomware - Enable Multiple User Sessions
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Winlogon,value_name=AllowMultipleTSSessions
+
+T1112,windows,35727d9e,Mimic Ransomware - Allow Multiple RDP Sessions per User
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Terminal Server,value_name=fSingleSessionPerUser
+
+T1112,windows,6174be7f,Event Viewer Registry Modification - Redirection URL
+FYI,Reviewed
+ARG,redirection_url,file://C:\windows\system32\notepad.exe
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows NT\CurrentVersion\Event Viewer,value_name=MicrosoftRedirectionURL
+
+T1112,windows,81483501,Event Viewer Registry Modification - Redirection Program
+FYI,Reviewed
+ARG,redirection_program,C:\windows\system32\notepad.exe
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows NT\CurrentVersion\Event Viewer,value_name=MicrosoftRedirectionProgram
+
+T1112,windows,e3ad8e83,Enabling Remote Desktop Protocol via Remote Registry
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Terminal Server\WinStations\RDP-Tcp,value_name=SecurityLayer
+
+T1112,windows,12e03af7,Disable Win Defender Notification
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications,value_name=DisableNotifications
+
+T1112,windows,01b20ca8,Disable Windows OS Auto Update
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU,value_name=NoAutoUpdate
+
+T1112,windows,396f997b,Disable Windows Auto Reboot for current logon user
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU,value_name=NoAutoRebootWithLoggedOnUsers
+
+T1112,windows,335a6b15,Windows Auto Update Option to Notify before download
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU,value_name=AUOptions
+
+T1112,windows,d1de3767,Do Not Connect To Win Update
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate,value_name=DoNotConnectToWindowsUpdateInternetLocations
+
+T1112,windows,3b625eaa,Tamper Win Defender Protection
+FYI,Reviewed - Test fails
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows Defender\Features,value_name=TamperProtection
+
+T1112,windows,8318ad20,Snake Malware Registry Blob
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Classes\.wav\OpenWithProgIds,value_name=AtomicSnake
+
+T1112,windows,37950714,Allow Simultaneous Download Registry
+FYI,Reviewed
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings,value_name=MaxConnectionsPerServer
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings,value_name=MaxConnectionsPer1_0Server
+
