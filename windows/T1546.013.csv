@@ -1,12 +1,6 @@
 T1546.013,windows,090e5aa5,Append malicious start-process cmdlet
+FYI,filemod Write validation criteria not working. Maybe needs a code change
 ARG,exe_path,calc.exe
-ARG,ps_profile,Microsoft.PowerShell_profile.ps1
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=Add-Content #{ps_profile} -Value
-_E_,AMSI,scan_content~=Add-Content #{ps_profile} -Value "Start-Process #{exe_path}"
-_E_,AMSI,scan_content~=powershell -Command exit
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=Add-Content #{ps_profile} -Value
-_E_,ETW,event_data_list~=Add-Content #{ps_profile} -Value "Start-Process #{exe_path}"
-_E_,ETW,event_data_list~=powershell -Command exit
+ARG,ps_profile,%profile%
+_E_,File,READ,path~=%profile%
+_E_,File,WRITE,path~=%profile%
