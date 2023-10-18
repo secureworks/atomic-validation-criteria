@@ -1,83 +1,12 @@
 T1546.003,windows,3c64f177,Persistence via WMI Event Subscription - CommandLineEventConsumer
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=$FilterArgs = @{name='AtomicRedTeam-WMIPersistence-CommandLineEventConsumer-Example';
-_E_,AMSI,scan_content~=                EventNameSpace='root\CimV2';
-_E_,AMSI,scan_content~=                QueryLanguage="WQL";
-_E_,AMSI,scan_content~=                Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};
-_E_,AMSI,scan_content~=$Filter=New-CimInstance -Namespace root/subscription -ClassName __EventFilter -Property $FilterArgs
-_E_,AMSI,scan_content~=$ConsumerArgs = @{name='AtomicRedTeam-WMIPersistence-CommandLineEventConsumer-Example';
-_E_,AMSI,scan_content~=                CommandLineTemplate="$($Env:SystemRoot)\System32\notepad.exe";}
-_E_,AMSI,scan_content~=$Consumer=New-CimInstance -Namespace root/subscription -ClassName CommandLineEventConsumer -Property $ConsumerArgs
-_E_,AMSI,scan_content~=$FilterToConsumerArgs = @{
-_E_,AMSI,scan_content~=Filter = [Ref] $Filter;
-_E_,AMSI,scan_content~=Consumer = [Ref] $Consumer;
-_E_,AMSI,scan_content~=}
-_E_,AMSI,scan_content~=$FilterToConsumerBinding = New-CimInstance -Namespace root/subscription -ClassName __FilterToConsumerBinding -Property $FilterToConsumerArgs
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=$FilterArgs = @{name='AtomicRedTeam-WMIPersistence-CommandLineEventConsumer-Example';
-_E_,ETW,event_data_list~=                EventNameSpace='root\CimV2';
-_E_,ETW,event_data_list~=                QueryLanguage="WQL";
-_E_,ETW,event_data_list~=                Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};
-_E_,ETW,event_data_list~=$Filter=New-CimInstance -Namespace root/subscription -ClassName __EventFilter -Property $FilterArgs
-_E_,ETW,event_data_list~=$ConsumerArgs = @{name='AtomicRedTeam-WMIPersistence-CommandLineEventConsumer-Example';
-_E_,ETW,event_data_list~=                CommandLineTemplate="$($Env:SystemRoot)\System32\notepad.exe";}
-_E_,ETW,event_data_list~=$Consumer=New-CimInstance -Namespace root/subscription -ClassName CommandLineEventConsumer -Property $ConsumerArgs
-_E_,ETW,event_data_list~=$FilterToConsumerArgs = @{
-_E_,ETW,event_data_list~=Filter = [Ref] $Filter;
-_E_,ETW,event_data_list~=Consumer = [Ref] $Consumer;
-_E_,ETW,event_data_list~=}
-_E_,ETW,event_data_list~=$FilterToConsumerBinding = New-CimInstance -Namespace root/subscription -ClassName __FilterToConsumerBinding -Property $FilterToConsumerArgs
+_E_,AMSI,scan_content~=New-CimInstance -Namespace root/subscription -ClassName __FilterToConsumerBinding 
 
 T1546.003,windows,fecd0dfd,Persistence via WMI Event Subscription - ActiveScriptEventConsumer
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=$FilterArgs = @{name='AtomicRedTeam-WMIPersistence-ActiveScriptEventConsumer-Example';
-_E_,AMSI,scan_content~=                EventNameSpace='root\CimV2';
-_E_,AMSI,scan_content~=                QueryLanguage="WQL";
-_E_,AMSI,scan_content~=                Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};
-_E_,AMSI,scan_content~=$Filter=Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments $FilterArgs
-_E_,AMSI,scan_content~=$ConsumerArgs = @{name='AtomicRedTeam-WMIPersistence-ActiveScriptEventConsumer-Example';
-_E_,AMSI,scan_content~=                ScriptingEngine='VBScript';
-_E_,AMSI,scan_content~=                ScriptText='
-_E_,AMSI,scan_content~=                Set objws = CreateObject("Wscript.Shell")
-_E_,AMSI,scan_content~=                objws.Run "notepad.exe", 0, True
-_E_,AMSI,scan_content~=                '}
-_E_,AMSI,scan_content~=$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class ActiveScriptEventConsumer -Arguments $ConsumerArgs
-_E_,AMSI,scan_content~=$FilterToConsumerArgs = @{
-_E_,AMSI,scan_content~=Filter = $Filter;
-_E_,AMSI,scan_content~=Consumer = $Consumer;
-_E_,AMSI,scan_content~=}
-_E_,AMSI,scan_content~=$FilterToConsumerBinding = Set-WmiInstance -Namespace 'root/subscription' -Class '__FilterToConsumerBinding' -Arguments $FilterToConsumerArgs
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=$FilterArgs = @{name='AtomicRedTeam-WMIPersistence-ActiveScriptEventConsumer-Example';
-_E_,ETW,event_data_list~=                EventNameSpace='root\CimV2';
-_E_,ETW,event_data_list~=                QueryLanguage="WQL";
-_E_,ETW,event_data_list~=                Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};
-_E_,ETW,event_data_list~=$Filter=Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments $FilterArgs
-_E_,ETW,event_data_list~=$ConsumerArgs = @{name='AtomicRedTeam-WMIPersistence-ActiveScriptEventConsumer-Example';
-_E_,ETW,event_data_list~=                ScriptingEngine='VBScript';
-_E_,ETW,event_data_list~=                ScriptText='
-_E_,ETW,event_data_list~=                Set objws = CreateObject("Wscript.Shell")
-_E_,ETW,event_data_list~=                objws.Run "notepad.exe", 0, True
-_E_,ETW,event_data_list~=                '}
-_E_,ETW,event_data_list~=$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class ActiveScriptEventConsumer -Arguments $ConsumerArgs
-_E_,ETW,event_data_list~=$FilterToConsumerArgs = @{
-_E_,ETW,event_data_list~=Filter = $Filter;
-_E_,ETW,event_data_list~=Consumer = $Consumer;
-_E_,ETW,event_data_list~=}
-_E_,ETW,event_data_list~=$FilterToConsumerBinding = Set-WmiInstance -Namespace 'root/subscription' -Class '__FilterToConsumerBinding' -Arguments $FilterToConsumerArgs
+_E_,AMSI,scan_content~=Set-WmiInstance -Namespace 'root/subscription' -Class '__FilterToConsumerBinding' 
 
 T1546.003,windows,29786d7e,Windows MOFComp.exe Load MOF File
 ARG,mofcomp_path,C:\windows\system32\wbem\mofcomp.exe
 ARG,mof_file,PathToAtomicsFolder\T1546.003\src\T1546.003.mof
-_E_,Process,cmdline~=#{mofcomp_path}
-_E_,Process,cmdline~=atomics/T1546.003/src/T1546.003.mof
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=#{mofcomp_path}
-_E_,AMSI,scan_content~=atomics/T1546.003/src/T1546.003.mof
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=#{mofcomp_path}
-_E_,ETW,event_data_list~=atomics/T1546.003/src/T1546.003.mof
+_E_,Process,cmdline~=mofcomp.exe,cmdline~=T1546.003.mof
+
 
