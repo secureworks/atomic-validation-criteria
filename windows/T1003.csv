@@ -2,49 +2,29 @@ T1003,windows,96345bfc,Gsecdump
 ARG,gsecdump_exe,PathToAtomicsFolder\..\ExternalPayloads\gsecdump.exe
 ARG,gsecdump_bin_hash,94CAE63DCBABB71C5DD43F55FD09CAEFFDCD7628A02A112FB3CBA36698EF72BC
 ARG,gsecdump_url,https://web.archive.org/web/20150606043951if_/http://www.truesec.se/Upload/Sakerhet/Tools/gsecdump-v2b5.exe
-_E_,Process,cmdline*=.*atomics.*ExternalPayloads.*gsecdump.exe -a
+_E_,Process,cmdline~=gsecdump.exe -a
 
 T1003,windows,9e2173c0,Credential Dumping with NPPSpy
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=Copy-Item 
-_E_,AMSI,scan_content~=atomics\ExternalPayloads\NPPSPY.dll" -Destination "C:\Windows\System32"
-_E_,AMSI,scan_content~=$path = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\NetworkProvider\Order" -Name PROVIDERORDER
-_E_,AMSI,scan_content~=$UpdatedValue = $Path.PROVIDERORDER + ",NPPSpy"
-_E_,AMSI,scan_content~=Set-ItemProperty -Path $Path.PSPath -Name "PROVIDERORDER" -Value $UpdatedValue
-_E_,AMSI,scan_content~=$rv = New-Item -Path HKLM:\SYSTEM\CurrentControlSet\Services\NPPSpy -ErrorAction Ignore
-_E_,AMSI,scan_content~=$rv = New-Item -Path HKLM:\SYSTEM\CurrentControlSet\Services\NPPSpy\NetworkProvider -ErrorAction Ignore
-_E_,AMSI,scan_content~=$rv = New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\NPPSpy\NetworkProvider -Name "Class" -Value 2 -ErrorAction Ignore
-_E_,AMSI,scan_content~=$rv = New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\NPPSpy\NetworkProvider -Name "Name" -Value NPPSpy -ErrorAction Ignore
-_E_,AMSI,scan_content~=$rv = New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\NPPSpy\NetworkProvider -Name "ProviderPath" -PropertyType ExpandString -Value "%SystemRoot%\System32\NPPSPY.dll" -ErrorAction Ignore
-_E_,AMSI,scan_content~=echo "[!] Please, logout and log back in. Cleartext password for this account is going to be located in C:\NPPSpy.txt"
+FYI,First REG criteria checks the changes done on ProviderOrder Registry Key, rest checks the value added to NPPSpy registry key
+_E_,AMSI,scan_content~=Copy-Item,scan_content~=-Destination "C:\Windows\System32"
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\MACHINE\SYSTEM,key_name~=Control\NetworkProvider\Order,value_name=PROVIDERORDER
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\MACHINE\SYSTEM,key_name~=Services\NPPSpy
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\MACHINE\SYSTEM,key_name~=Services\NPPSpy\NetworkProvider
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\MACHINE\SYSTEM,key_name~=Services\NPPSpy\NetworkProvider,value_name=Class
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\MACHINE\SYSTEM,key_name~=Services\NPPSpy\NetworkProvider,value_name=Name
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\MACHINE\SYSTEM,key_name~=Services\NPPSpy\NetworkProvider,value_name=ProviderPath
 
 T1003,windows,d400090a,Dump svchost.exe to gather RDP credentials
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=$ps = (Get-NetTCPConnection -LocalPort 3389 -State Established -ErrorAction Ignore)
-_E_,AMSI,scan_content~=if($ps){$id = $ps[0].OwningProcess} else {$id = (Get-Process svchost)[0].Id }
-_E_,AMSI,scan_content~=C:\Windows\System32\rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump $id $env:TEMP\svchost-exe.dmp full
+_E_,Process,cmdline~=C:\Windows\System32\rundll32.exe C:\windows\System32\comsvcs.dll MiniDump,cmdline~=svchost-exe.dmp full
 
 T1003,windows,6c7a4fd3,Retrieve Microsoft IIS Service Account Credentials Using AppCmd (using list)
 _E_,Process,cmdline~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /@t:*
 _E_,Process,cmdline~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /@text:*
 _E_,Process,cmdline~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /text:*
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /@t:*
-_E_,AMSI,scan_content~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /@text:*
-_E_,AMSI,scan_content~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /text:*
 
 T1003,windows,42510244,Retrieve Microsoft IIS Service Account Credentials Using AppCmd (using config)
 _E_,Process,cmdline~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /config
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /config
 
 T1003,windows,84113186,Dump Credential Manager using keymgr.dll and rundll32.exe
-_E_,Process,cmdline~=rundll32.exe keymgr,KRShowKeyMgr
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=Copy-Item 
-_E_,AMSI,scan_content~=rundll32.exe keymgr,KRShowKeyMgr
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=rundll32.exe keymgr,KRShowKeyMgr
-
+_E_,Process,"cmdline~=rundll32.exe keymgr,KRShowKeyMgr"
 
