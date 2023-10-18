@@ -1,8 +1,4 @@
 T1056.001,windows,d9b633ca,Input Capture
+FYI,Auto-generated please review
 ARG,filepath,%TEMP%\key.log
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=atomics\T1056.001\src\Get-Keystrokes.ps1 -LogPath #{filepath}
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=atomics\T1056.001\src\Get-Keystrokes.ps1 -LogPath #{filepath}
-
+_E_,AMSI,scan_content~=Get-Keystrokes.ps1 -LogPath #{filepath},app_name~=PowerShell
