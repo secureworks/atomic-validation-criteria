@@ -6,7 +6,6 @@ T1134.001,windows,34f0a430,`SeDebugPrivilege` token duplication
 _E_,AMSI,scan_content*='System.dll'.*GetType('Microsoft.Win32.UnsafeNativeMethods')
 
 T1134.001,windows,7be1bc0f,Launch NSudo Executable
-FYI,No process level NSudoLG.exe trace could be found in json dump
 ARG,nsudo_path,PathToAtomicsFolder\..\ExternalPayloads\NSudo_8.2_All_Components\NSudo Launcher\x64\NSudoLG.exe
 _E_,AMSI,scan_content~=Start-Process,scan_content~=atomics/../ExternalPayloads/NSudo_8.2_All_Components/NSudo Launcher/x64/NSudoLG.exe -Argument "-U:T -P:E cmd",app_name~=PowerShell
 
