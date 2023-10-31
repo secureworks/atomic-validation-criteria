@@ -1,0 +1,9 @@
+T1547.009,windows,ce4fc678,Shortcut Modification
+FYI,Auto-generated please review
+ARG,shortcut_file_path,%temp%\T1547.009_modified_shortcut.url
+_E_,File,CREATE,path*=\\T1547.009_modified_shortcut.url$
+
+T1547.009,windows,cfdc954d,Create shortcut to cmd in startup folders
+FYI,Auto-generated please review
+_E_,File,CREATE,path*=.*AppData.*\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\T1547.009.lnk
+_E_,File,CREATE,path*=.*ProgramData.*\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\T1547.009.lnk
