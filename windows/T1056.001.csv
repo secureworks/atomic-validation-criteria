@@ -1,4 +1,3 @@
 T1056.001,windows,d9b633ca,Input Capture
-FYI,Auto-generated please review
 ARG,filepath,%TEMP%\key.log
 _E_,AMSI,scan_content~=Get-Keystrokes.ps1 -LogPath #{filepath},app_name~=PowerShell
