@@ -1,5 +1,4 @@
 T1546.013,windows,090e5aa5,Append malicious start-process cmdlet
-FYI,filemod Write validation criteria not working. Maybe needs a code change
 ARG,exe_path,calc.exe
 ARG,ps_profile,%profile%
 _E_,File,READ,path~=%profile%
