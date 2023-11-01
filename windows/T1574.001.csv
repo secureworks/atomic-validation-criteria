@@ -1,0 +1,7 @@
+T1574.001,windows,8549ad4b,DLL Search Order Hijacking - amsi.dll
+_E_,File,CREATE,path~=updater.exe
+_E_,File,WRITE,path~=updater.exe
+_E_,File,CREATE,path~=amsi.dll
+_E_,File,WRITE,path~=amsi.dll
+_E_,Process,cmdline~=%APPDATA%\updater.exe -Command exit
+
