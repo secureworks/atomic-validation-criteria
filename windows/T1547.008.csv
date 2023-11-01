@@ -1,0 +1,4 @@
+T1547.008,windows,8ecef16d,Modify Registry to load Arbitrary DLL into LSASS - LsaDbExtPt
+FYI,Validating using the registry that is being modified
+ARG,dll_path,PathToAtomicsFolder\..\ExternalPayloads\lsass_lib.dll
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\MACHINE\\SYSTEM\\ControlSet[0-9]*\\Services\\NTDS$,value_name=LsaDbExtPt
