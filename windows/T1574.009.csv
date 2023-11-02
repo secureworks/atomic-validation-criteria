@@ -1,0 +1,7 @@
+T1574.009,windows,2770dea7,Execution of program.exe as service with unquoted service path
+ARG,service_executable,PathToAtomicsFolder\T1574.009\bin\WindowsServiceExample.exe
+_E_,File,CREATE,path~=Program Files\windows_service.exe
+_E_,File,CREATE,path~=program.exe
+_E_,REG,event_type=CREATEKEY,key_name~=Services\Example Service
+_E_,REG,event_type=SETVALUEKEY,key_name~=Services\Example Service
+

@@ -1,0 +1,10 @@
+T1574.011,windows,f7536d63,Service Registry Permissions Weakness
+ARG,weak_service_name,weakservicename
+_E_,AMSI,scan_content~=get-acl REGISTRY::HKLM\SYSTEM\CurrentControlSet\Services\* |FL
+_E_,AMSI,scan_content~=get-acl REGISTRY::HKLM\SYSTEM\CurrentControlSet\Services\#{weak_service_name} |FL
+
+T1574.011,windows,f38e9eea,Service ImagePath Change with reg.exe
+ARG,weak_service_name,calcservice
+ARG,weak_service_path,%windir%\system32\win32calc.exe
+ARG,malicious_service_path,%windir%\system32\cmd.exe
+_E_,REG,event_type=SETVALUEKEY,key_name~=Services\#{weak_service_name},value_name=ImagePath

@@ -1,0 +1,21 @@
+T1574.012,windows,9d5f89dc,User scope COR_PROFILER
+ARG,file_name,PathToAtomicsFolder\T1574.012\bin\T1574.012x64.dll
+ARG,clsid_guid,{09108e71-974c-4010-89cb-acf471ae9e2c}
+_E_,Process,cmdline~=mmc.exe EVENTVWR.MSC
+_E_,REG,event_type=SETVALUEKEY,key_name~=Environment,value_name=COR_ENABLE_PROFILING
+_E_,REG,event_type=SETVALUEKEY,key_name~=Environment,value_name=COR_PROFILER
+_E_,REG,event_type=SETVALUEKEY,key_name~=Environment,value_name=COR_PROFILER_PATH
+
+T1574.012,windows,f373b482,System Scope COR_PROFILER
+ARG,file_name,PathToAtomicsFolder\T1574.012\bin\T1574.012x64.dll
+ARG,clsid_guid,{09108e71-974c-4010-89cb-acf471ae9e2c}
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Session Manager\Environment,value_name=COR_PROFILER
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Session Manager\Environment,value_name=COR_PROFILER_PATH
+
+T1574.012,windows,79d57242,Registry-free process scope COR_PROFILER
+ARG,file_name,PathToAtomicsFolder\T1574.012\bin\T1574.012x64.dll
+ARG,clsid_guid,{09108e71-974c-4010-89cb-acf471ae9e2c}
+_E_,AMSI,scan_content~=$env:COR_ENABLE_PROFILING = 1
+_E_,AMSI,scan_content~=$env:COR_PROFILER = '#{clsid_guid}'
+_E_,AMSI,scan_content~=$env:COR_PROFILER_PATH = '"#{file_name}"'
+

@@ -1,0 +1,5 @@
+T1574.008,windows,1561de08,powerShell Persistence via hijacking default modules - Get-Variable.exe
+_E_,File,CREATE,path~=Microsoft\WindowsApps\Get-Variable.exe
+_E_,Process,cmdline~=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /out:"$env:localappdata\Microsoft\WindowsApps\Get-Variable.exe" "PathToAtomicsFolder\T1574.008\bin\calc.cs"
+
+
