@@ -53,12 +53,12 @@ _E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\USER,key_name~=SOFTWARE\Micro
 T1547.001,windows,a70faea1,HKCU - Policy Settings Explorer Run Key
 ARG,target_key_value_name,atomictest
 ARG,payload,C:\Windows\System32\calc.exe
-_E_,REG,event_type=SETVALUEKEY,key_name~=REGISTRY\USER,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run,value_name=atomictest
+_E_,REG,event_type=SETVALUEKEY,key_name~=REGISTRY\USER,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run,value_name=#{target_key_value_name}
 
 T1547.001,windows,b5c9a9bc,HKLM - Policy Settings Explorer Run Key
 ARG,target_key_value_name,atomictest
 ARG,payload,C:\Windows\System32\calc.exe
-_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run,value_name=atomictest
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run,value_name=#{target_key_value_name}
 
 T1547.001,windows,f7fab6cc,HKLM - Append Command to Winlogon Userinit KEY Value
 ARG,payload,C:\Windows\System32\calc.exe
