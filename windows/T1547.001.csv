@@ -1,0 +1,78 @@
+T1547.001,windows,e55be3fd,Reg Key Run
+ARG,command_to_execute,C:\Path\AtomicRedTeam.exe
+_E_,REG,event_type~=SETVALUEKEY,key_name~=\REGISTRY\USER,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Run,value_name=Atomic Red Team
+
+T1547.001,windows,554cbd88,Reg Key RunOnce
+ARG,thing_to_execute,C:\Path\AtomicRedTeam.dll
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnceEx\0001\Depend,value_name=1
+
+T1547.001,windows,eb44f842,PowerShell Registry RunOnce
+ARG,thing_to_execute,powershell.exe
+ARG,reg_key_path,HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce
+_E_,REG,event_type~=SETVALUEKEY,key_name~=REGISTRY\MACHINE,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce,value_name=NextRun
+
+T1547.001,windows,2cb98256,Suspicious vbs file run from startup Folder
+_E_,File,CREATE,path~=AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\vbsstartup.vbs
+_E_,File,CREATE,path~=ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\vbsstartup.vbs
+_E_,Process,cmdline~=cscript.exe,cmdline~=Microsoft\Windows\Start Menu\Programs\Startup\vbsstartup.vbs
+_E_,Process,cmdline~=cscript.exe,cmdline~=ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\vbsstartup.vbs
+
+T1547.001,windows,dade9447,Suspicious jse file run from startup Folder
+_E_,File,CREATE,path~=AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\jsestartup.jse
+_E_,File,CREATE,path~=ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\jsestartup.jse
+_E_,Process,cmdline~=cscript.exe,cmdline~=AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\jsestartup.jse
+_E_,Process,cmdline~=cscript.exe,cmdline~=ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\jsestartup.jse
+
+T1547.001,windows,5b6768e4,Suspicious bat file run from startup Folder
+_E_,File,CREATE,path~=AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\batstartup.bat
+_E_,File,CREATE,path~=ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\batstartup.bat
+_E_,Process,cmdline~=cmd.exe,cmdline~=AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\batstartup.bat
+_E_,Process,cmdline~=cmd.exe,cmdline~=ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\batstartup.bat
+
+T1547.001,windows,24e55612,Add Executable Shortcut Link to User Startup Folder
+_E_,File,CREATE,path~=AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\calc_exe.lnk
+
+T1547.001,windows,bda6a3d6,Add persistance via Recycle bin
+_E_,REG,event_type~=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Classes\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\shell\open\command
+
+T1547.001,windows,9dc7767b,SystemBC Malware-as-a-Service Registry
+ARG,reg_key_value, -windowstyle hidden -ExecutionPolicy Bypass -File
+ARG,reg_key_path,HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\USER,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Run,value_name=socks5_powershell
+
+T1547.001,windows,acfef903,Change Startup Folder - HKLM Modify User Shell Folders Common Startup Value
+ARG,new_startup_folder,%TMP%\atomictest\
+ARG,payload,C:\Windows\System32\calc.exe
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders,value_name=Common Startup
+
+T1547.001,windows,8834b65a,Change Startup Folder - HKCU Modify User Shell Folders Startup Value
+ARG,new_startup_folder,%TMP%\atomictest\
+ARG,payload,C:\Windows\System32\calc.exe
+_E_,REG,event_type=SETVALUEKEY,key_name~=\REGISTRY\USER,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders,value_name=Startup
+
+T1547.001,windows,a70faea1,HKCU - Policy Settings Explorer Run Key
+ARG,target_key_value_name,atomictest
+ARG,payload,C:\Windows\System32\calc.exe
+_E_,REG,event_type=SETVALUEKEY,key_name~=REGISTRY\USER,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run,value_name=atomictest
+
+T1547.001,windows,b5c9a9bc,HKLM - Policy Settings Explorer Run Key
+ARG,target_key_value_name,atomictest
+ARG,payload,C:\Windows\System32\calc.exe
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run,value_name=atomictest
+
+T1547.001,windows,f7fab6cc,HKLM - Append Command to Winlogon Userinit KEY Value
+ARG,payload,C:\Windows\System32\calc.exe
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon,value_name=Userinit
+
+T1547.001,windows,1d958c61,HKLM - Modify default System Shell - Winlogon Shell KEY Value 
+ARG,payload,C:\Windows\explorer.exe
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon,value_name=Shell
+
+T1547.001,windows,14fdc3f1,secedit used to create a Run key in the HKLM Hive
+ARG,ini_file,PathToAtomicsFolder\T1547.001\src\regtemplate.ini
+ARG,secedit_db,mytemplate.db
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run,value_name=calc
+
+T1547.001,windows,befc2b40,Modify BootExecute Value
+ARG,registry_value,autocheck autoche *
+_E_,REG,key_name~=\REGISTRY\MACHINE\SYSTEM,key_name~=Control\Session Manager,value_name=BootExecute
