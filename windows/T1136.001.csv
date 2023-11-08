@@ -1,0 +1,17 @@
+T1136.001,windows,6657864e,Create a new user in a command prompt
+ARG,username,T1136.001_CMD
+ARG,password,T1136.001_CMD!
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SAM\SAM\Domains\Account\Users\Names\#{username}
+_E_,ETW,chan_name=SECURITY,event_msg~=A user account was created,event_data_list~=TargetUserName:#{username},event_data_list~=SamAccountName:#{username}
+
+T1136.001,windows,bc8be0ac,Create a new user in PowerShell
+ARG,username,T1136.001_PowerShell
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SAM\SAM\Domains\Account\Users\Names\#{username}
+_E_,ETW,chan_name=SECURITY,event_msg~=A user account was created,event_data_list~=TargetUserName:#{username},event_data_list~=SamAccountName:#{username}
+
+T1136.001,windows,fda74566,Create a new Windows admin user
+ARG,username,T1136.001_Admin
+ARG,password,T1136_pass
+_E_,REG,event_type=SETVALUEKEY,key_name=\REGISTRY\MACHINE\SAM\SAM\Domains\Account\Users\Names\#{username}
+_E_,ETW,chan_name=SECURITY,event_msg~=A user account was created,event_data_list~=TargetUserName:#{username},event_data_list~=SamAccountName:#{username}
+_E_,ETW,chan_name=SECURITY,event_msg~=A member was added to a security-enabled local group,event_data_list~=TargetUserName:Administrators
