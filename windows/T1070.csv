@@ -1,0 +1,9 @@
+T1070,windows,b4115c7a,Indicator Removal using FSUtil
+FYI,Running fsutil with specific parameters is potentially malicious
+_E_,Process,cmdline*=fsutil(.exe)? usn deletejournal /D
+
+T1070,windows,96e86706,Indicator Manipulation using FSUtil
+FYI,Running fsutil with specific parameters is potentially malicious
+ARG,file_to_manipulate,PathToAtomicsFolder\..\ExternalPayloads\T1070-2.txt
+ARG,file_data_length,10
+_E_,Process,cmdline*=fsutil(.exe)? file setZeroData offset=0 length=

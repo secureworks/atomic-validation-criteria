@@ -1,0 +1,29 @@
+T1547.004,windows,bf9f9d65,Winlogon Shell Key Persistence - PowerShell
+FYI,Auto-generated please review
+ARG,binary_to_execute,C:\Windows\System32\cmd.exe
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\USER\\\S+\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon$,value_name=Shell
+
+T1547.004,windows,fb32c935,Winlogon Userinit Key Persistence - PowerShell
+FYI,Auto-generated please review
+ARG,binary_to_execute,C:\Windows\System32\cmd.exe
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\USER\\\S+\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon$,value_name=Userinit
+
+T1547.004,windows,d40da266,Winlogon Notify Key Logon Persistence - PowerShell
+FYI,Auto-generated please review
+ARG,binary_to_execute,C:\Windows\Temp\atomicNotificationPackage.dll
+ARG,function_to_execute,AtomicTestFunction
+_E_,REG,event_type=CREATEKEY,key_name*=\\REGISTRY\\USER\\\S+\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\AtomicRedTeam$
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\USER\\\S+\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\AtomicRedTeam$,value_name=DllName
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\USER\\\S+\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\AtomicRedTeam$,value_name=Logon
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\USER\\\S+\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\AtomicRedTeam$,value_name=Impersonate
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\USER\\\S+\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\AtomicRedTeam$,value_name=Asynchronous
+
+T1547.004,windows,95a3c42f,Winlogon HKLM Shell Key Persistence - PowerShell
+FYI,Just verifying if registry value was set or not
+ARG,binary_to_execute,C:\Windows\System32\cmd.exe
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon$,value_name=Shell
+
+T1547.004,windows,f9b8daff,Winlogon HKLM Userinit Key Persistence - PowerShell
+FYI,Just verifying if registry value was set or not
+ARG,binary_to_execute,C:\Windows\System32\cmd.exe
+_E_,REG,event_type=SETVALUEKEY,key_name*=\\REGISTRY\\MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon$,value_name=Userinit
