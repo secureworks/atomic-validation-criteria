@@ -1,0 +1,25 @@
+T1070.004,windows,861ea0b4,Delete a single file - Windows cmd
+ARG,file_to_delete,%temp%\deleteme_T1551.004
+_E_,File,DELETE,path~=deleteme_T1551.004
+
+T1070.004,windows,ded937c4,Delete an entire folder - Windows cmd
+ARG,folder_to_delete,%temp%\deleteme_T1551.004
+_E_,File,DELETE,path~=deleteme_T1551.004
+
+T1070.004,windows,9dee89bd,Delete a single file - Windows PowerShell
+ARG,file_to_delete,%TEMP%\deleteme_T1551.004
+_E_,File,DELETE,path~=deleteme_T1551.004
+
+T1070.004,windows,edd779e4,Delete an entire folder - Windows PowerShell
+ARG,folder_to_delete,%TEMP%\deleteme_folder_T1551.004
+_E_,File,DELETE,path~=deleteme_folder_T1551.004
+
+T1070.004,windows,36f96049,Delete Prefetch File
+_E_,File,DELETE,path~=Prefetch
+
+T1070.004,windows,69f50a5f,Delete TeamViewer Log Files
+ARG,teamviewer_log_file,%TEMP%\TeamViewer_54.log
+_E_,Process,cmdline~=New-Item -Path #{teamviewer_log_file} -Force | Out-Null
+_E_,Process,cmdline~=Remove-Item #{teamviewer_log_file} -Force -ErrorAction Ignore
+_E_,File,DELETE,path~=TeamViewer_54.log
+

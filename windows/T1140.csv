@@ -1,0 +1,9 @@
+T1140,windows,dc6fe391,Deobfuscate/Decode Files Or Information
+ARG,executable,C:\Windows\System32\calc.exe
+_E_,File,CREATE,path~=\AppData\Local\Temp\T1140_calc.txt
+_E_,File,CREATE,path~=\AppData\Local\Temp\T1140_calc_decoded.exe
+
+T1140,windows,71abc534,Certutil Rename and Decode
+ARG,executable,C:\Windows\System32\calc.exe
+_E_,File,CREATE,path~=\AppData\Local\Temp\T1140_calc2.txt
+_E_,File,CREATE,path~=\AppData\Local\Temp\T1140_calc2_decoded.exe

@@ -1,0 +1,9 @@
+T1070.001,windows,e6abb60e,Clear Logs
+ARG,log_name,System 
+_E_,ETW,chan_name=System,event_msg=The System log file was cleared.
+
+T1070.001,windows,b13e9306,Delete System Logs Using Clear-EventLog
+_E_,ETW,chan_name=System,event_msg=The System log file was cleared.
+
+T1070.001,windows,1b682d84,Clear Event Logs via VBA
+_E_,ETW,chan_name=System,event_msg=The System log file was cleared.

@@ -1,0 +1,9 @@
+T1070.003,windows,2f898b81,Prevent Powershell History Logging
+_E_,AMSI,scan_content~=Set-PSReadlineOption -HistorySaveStyle SaveNothing
+
+T1070.003,windows,da75ae8d,Clear Powershell History by Deleting History File
+_E_,AMSI,scan_content~=Remove-Item (Get-PSReadlineOption).HistorySavePath
+
+T1070.003,windows,1d0d9aa6,Set Custom AddToHistoryHandler to Avoid History File Logging
+_E_,AMSI,scan_content~=Set-PSReadLineOption -AddToHistoryHandler { return $false }
+

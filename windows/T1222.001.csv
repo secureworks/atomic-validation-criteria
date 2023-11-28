@@ -1,0 +1,26 @@
+T1222.001,windows,98d34bb4,Take ownership using takeown utility
+ARG,file_folder_to_own,%temp%\T1222.001_takeown_folder
+_E_,Process,cmdline~=takeown.exe
+_E_,Process,hashes=57B3CFA9993E52866A2FB489EDF079BF4F1C78FA7525BDF59AFFA8F9CB4023F8
+
+T1222.001,windows,a8206bcc,cacls - Grant permission to specified user or group recursively
+ARG,file_or_folder,%temp%\T1222.001_cacls
+ARG,user_or_group,Everyone
+_E_,Process,cmdline~=icacls.exe
+_E_,Process,hashes=222EA0E9D8ED1D337DBAEDD75A13B8F28FA5C3711DCDF4307E75CEDE5B5F6B9A
+
+T1222.001,windows,bec1e95c,attrib - Remove read-only attribute
+ARG,file_or_folder,%temp%\T1222.001_attrib
+_E_,Process,cmdline~=attrib.exe -r
+_E_,Process,hashes=1043111FF07814B0D3439561B4CEE5D7EC1799A7A0A419949FEE707666F6DDED
+
+T1222.001,windows,32b979da,attrib - hide file
+ARG,file_or_folder,%temp%\T1222.001_attrib_2
+_E_,Process,cmdline~=attrib.exe +h
+_E_,Process,hashes=1043111FF07814B0D3439561B4CEE5D7EC1799A7A0A419949FEE707666F6DDED
+
+T1222.001,windows,ac7e6118,Grant Full Access to folder for Everyone - Ryuk Ransomware Style
+ARG,path,C:\Users\Public\*
+ARG,file_path,%temp%\T1222.001-folder-perms-backup.txt
+_E_,Process,cmdline~=icacls.exe
+_E_,Process,hashes=222EA0E9D8ED1D337DBAEDD75A13B8F28FA5C3711DCDF4307E75CEDE5B5F6B9A
