@@ -1,0 +1,8 @@
+T1036.004,windows,f9f2fe59,Creating W32Time similar named service using schtasks
+_E_,Process,cmdline~=schtasks /create /ru system /sc daily /tr cmd /c powershell.exe -ep bypass -file c:\T1036.004_NonExistingScript.ps1 /tn win32times /f
+_E_,Process,cmdline~=schtasks /query /tn win32times
+
+T1036.004,windows,b721c6ef,Creating W32Time similar named service using sc
+_E_,Process,cmdline~=sc create win32times binPath= cmd /c start c:\T1036.004_NonExistingScript.ps1
+_E_,Process,cmdline~=sc qc win32times
+
