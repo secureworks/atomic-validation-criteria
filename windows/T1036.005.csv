@@ -1,0 +1,3 @@
+T1036.005,windows,35eb8d16,Masquerade as a built-in system executable
+ARG,executable_filepath,$Env:windir\Temp\svchost.exe
+_E_,AMSI,scan_content~=@ -OutputAssembly "#{executable_filepath}"
