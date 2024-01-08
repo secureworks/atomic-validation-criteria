@@ -1,0 +1,6 @@
+T1036,windows,51005ac7,System File Copied to Unusual Location
+_E_,AMSI,scan_content~=copy-item "$env:windir\System32\cmd.exe" -destination "$env:allusersprofile\cmd.exe"
+
+T1036,windows,4449c89b,Malware Masquerading and Execution from Zip File
+ARG,url,https://github.com/redcanaryco/atomic-red-team/raw/master/atomics/T1036/bin/T1036.zip
+_E_,Process,"cmdline~=rundll32 2.dll, StartW"
