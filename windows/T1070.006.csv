@@ -1,0 +1,19 @@
+T1070.006,windows,b3b2c408,Windows - Modify file creation timestamp with PowerShell
+ARG,target_date_time,01/01/1970 00:00:00
+ARG,file_path,PathToAtomicsFolder\..\ExternalPayloads\T1551.006_timestomp.txt
+_E_,AMSI,scan_content~=$_.CreationTime = "#{target_date_time}"
+
+T1070.006,windows,f8f6634d,Windows - Modify file last modified timestamp with PowerShell
+ARG,target_date_time,01/01/1970 00:00:00
+ARG,file_path,PathToAtomicsFolder\..\ExternalPayloads\T1551.006_timestomp.txt
+_E_,AMSI,scan_content~=$_.LastWriteTime = "#{target_date_time}"
+
+T1070.006,windows,da627f63,Windows - Modify file last access timestamp with PowerShell
+ARG,file_path,PathToAtomicsFolder\..\ExternalPayloads\T1551.006_timestomp.txt
+ARG,target_date_time,01/01/1970 00:00:00
+_E_,AMSI,scan_content~=$_.LastAccessTime = "#{target_date_time}"
+
+T1070.006,windows,d7512c33,Windows - Timestomp a File
+ARG,file_path,PathToAtomicsFolder\..\ExternalPayloads
+_E_,AMSI,scan_content~=timestomp atomics\..\ExternalPayloads -dest \kxwn.lock
+

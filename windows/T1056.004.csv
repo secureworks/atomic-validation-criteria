@@ -1,0 +1,7 @@
+T1056.004,windows,de1934ea,Hook PowerShell TLS Encrypt/Decrypt Messages
+ARG,file_name,PathToAtomicsFolder\T1056.004\bin\T1056.004x64.dll
+ARG,server_name,https://www.example.com
+_E_,AMSI,scan_content~=mavinject $pid /INJECTRUNNING "#{file_name}"
+_E_,AMSI,scan_content~=Invoke-WebRequest #{server_name} -UseBasicParsing
+
+

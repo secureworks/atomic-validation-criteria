@@ -1,0 +1,12 @@
+T1070.008,windows,d29f01ea,Copy and Delete Mailbox Data on Windows
+_E_,File,CREATE,path~=AppData\Local\Comms\Unistore\data\copy
+_E_,File,READ,path~=AppData\Local\Comms\Unistore\data\copy
+_E_,File,WRITE,path~=AppData\Local\Comms\Unistore\data\copy
+_E_,File,DELETE,path~=AppData\Local\Comms\Unistore\data\copy
+
+T1070.008,windows,edddff85,Copy and Modify Mailbox Data on Windows
+_E_,File,CREATE,path~=AppData\Local\Comms\Unistore\data\copy
+_E_,File,READ,path~=AppData\Local\Comms\Unistore\data
+_E_,File,READ,path~=AppData\Local\Comms\Unistore\data\copy
+_E_,File,WRITE,path~=AppData\Local\Comms\Unistore\data
+_E_,File,WRITE,path~=AppData\Local\Comms\Unistore\data\copy
