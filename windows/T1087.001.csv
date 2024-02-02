@@ -1,0 +1,21 @@
+T1087.001,windows,80887bec,Enumerate all accounts on Windows (Local)
+_E_,Process,cmdline~=net user
+_E_,Process,cmdline~=cmdkey.exe /list
+_E_,Process,cmdline~=net localgroup Users
+_E_,Process,cmdline~=net localgroup
+
+T1087.001,windows,ae4b6361,Enumerate all accounts via PowerShell (Local)
+_E_,AMSI,scan_content~=net user
+_E_,AMSI,scan_content~=get-localuser
+_E_,AMSI,scan_content~=get-localgroupmember -group Users
+_E_,AMSI,scan_content~=cmdkey.exe /list
+_E_,AMSI,scan_content~=ls C:/Users
+_E_,AMSI,scan_content~=get-childitem C:\Users\
+_E_,AMSI,scan_content~=dir C:\Users\
+_E_,AMSI,scan_content~=get-localgroup
+_E_,AMSI,scan_content~=net localgroup
+
+T1087.001,windows,a138085e,Enumerate logged on users via CMD (Local)
+FYI,Test fails
+_E_,Process,cmdline~=query user
+
