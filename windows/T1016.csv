@@ -1,0 +1,44 @@
+T1016,windows,970ab6a1,System Network Configuration Discovery on Windows
+_E_,Process,cmdline~=ipconfig /all
+_E_,Process,cmdline~=netsh interface show interface
+_E_,Process,cmdline~=arp -a
+_E_,Process,cmdline~=nbtstat -n
+_E_,Process,cmdline~=net config
+
+T1016,windows,038263cb,List Windows Firewall Rules
+_E_,Process,cmdline~=netsh advfirewall firewall show rule name=all
+
+T1016,windows,dafaf052,System Network Configuration Discovery (TrickBot Style)
+_E_,Process,cmdline~=ipconfig /all
+_E_,Process,cmdline~=net config workstation
+_E_,Process,cmdline~=net view /all /domain
+_E_,Process,cmdline~=nltest /domain_trusts
+
+T1016,windows,4b467538,List Open Egress Ports
+FYI,Test fails as the list of servers for this workgroup is not currently available
+ARG,port_file,PathToAtomicsFolder\T1016\src\top-128.txt
+ARG,output_file,%USERPROFILE%\Desktop\open-ports.txt
+ARG,portfile_url,https://github.com/redcanaryco/atomic-red-team/raw/master/atomics/T1016/src/top-128.txt
+_E_,AMSI,scan_content~=$wait = $test.beginConnect("allports.exposed", $port, $null, $null)
+
+T1016,windows,9bb45dd7,Adfind - Enumerate Active Directory Subnet Objects
+FYI,Test fails due to the error "ldap_bind_s: [] Error 0x51 (81) - Server Down"
+_E_,Process,cmdline~=AdFind.exe -f (objectcategory=subnet)
+
+T1016,windows,121de5c6,Qakbot Recon 
+ARG,recon_commands,PathToAtomicsFolder\T1016\src\qakbot.bat
+_E_,Process,cmdline~=whoami /all
+_E_,Process,cmdline~=cmd /c set
+_E_,Process,cmdline~=arp -a
+_E_,Process,cmdline~=ipconfig /all
+_E_,Process,cmdline~=net view /all
+_E_,Process,cmdline~=nslookup -querytype=ALL -timeout=10 _ldap._tcp.dc._msdcs.WORKGROUP
+_E_,Process,cmdline~=nslookup -querytype=ALL -timeout=10 _ldap._tcp.dc._msdcs.DomainName
+_E_,Process,cmdline~=net share
+_E_,Process,cmdline~=route print
+_E_,Process,cmdline~=netstat -nao
+_E_,Process,cmdline~=net localgroup
+
+T1016,windows,34557863,DNS Server Discovery Using nslookup
+_E_,Process,cmdline~=nslookup -querytype=ALL -timeout=12 _ldap._tcp.dc._msdcs.
+
