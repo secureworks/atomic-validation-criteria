@@ -1,0 +1,76 @@
+T1053.005,windows,fec27f65,Scheduled Task Startup Script
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_OnLogon
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_OnLogon,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_OnLogon,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_OnLogon,value_name=Index
+
+T1053.005,windows,42f53695,Scheduled task Local
+ARG,task_command,C:\windows\system32\cmd.exe
+ARG,time,20:10
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\spawn
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\spawn,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\spawn,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\spawn,value_name=Index
+
+T1053.005,windows,2e5eac3e,Scheduled task Remote
+FYI,Test failed with the error: The filename, directory name, or volume label syntax is incorrect
+ARG,task_command,C:\windows\system32\cmd.exe
+ARG,time,20:10
+ARG,user_name,%USERNAME%
+ARG,password,At0micStrong
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\Atomic task
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\Atomic task,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\Atomic task,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\Atomic task,value_name=Index
+
+T1053.005,windows,af9fd58f,Powershell Cmdlet Scheduled Task
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTask
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTask,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTask,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTask,value_name=Index
+
+T1053.005,windows,ecd3fa21,Task Scheduler via VBA
+FYI,Test failed as Invoke-Maldoc command throws an error
+ARG,ms_product,Word
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\Run Notepad
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\Run Notepad,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\Run Notepad,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\Run Notepad,value_name=Index
+
+T1053.005,windows,e16b3b75,WMI Invoke-CimMethod Scheduled Task
+ARG,xml_path,PathToAtomicsFolder\T1053.005\src\T1053_005_WMI.xml
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_WMI
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_WMI,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_WMI,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\T1053_005_WMI,value_name=Index
+
+T1053.005,windows,e895677d,Scheduled Task Executing Base64 Encoded Commands From Registry
+ARG,time,07:45
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\ATOMIC-T1053.005
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\ATOMIC-T1053.005,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\ATOMIC-T1053.005,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\ATOMIC-T1053.005,value_name=Index
+
+T1053.005,windows,cd925593,Import XML Schedule Task with Hidden Attribute
+ARG,xml_path,PathToAtomicsFolder\T1053.005\src\T1053_05_SCTASK_HIDDEN_ATTRIB.xml
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\atomic red team
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\atomic red team,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\atomic red team,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\atomic red team,value_name=Index
+
+T1053.005,windows,dda6fc7b,PowerShell Modify A Scheduled Task
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTaskModifed
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTaskModifed,value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTaskModifed,value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\AtomicTaskModifed,value_name=Index
+
+T1053.005,windows,704333ca,Scheduled Task ("Ghost Task") via Registry Key Manipulation
+FYI,GhostTask.exe failed to connect to \\localhost\HKLM
+ARG,user_name,%USERNAME%
+ARG,task_name,lilghostie
+ARG,task_command,notepad.exe
+ARG,target,localhost
+_E_,REG,event_type~=CREATEKEY,key_name~=Schedule\TaskCache\Tree\#{task_name}
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\#{task_name},value_name=SD
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\#{task_name},value_name=Id
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Schedule\TaskCache\Tree\#{task_name},value_name=Index
