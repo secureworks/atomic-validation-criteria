@@ -1,0 +1,8 @@
+T1007,windows,89676ba1,System Service Discovery
+_E_,Process,cmdline~=tasklist.exe
+_E_,Process,cmdline~=sc query
+_E_,Process,cmdline~=sc query state= all
+
+T1007,windows,5f864a3f,System Service Discovery - net.exe
+_E_,Process,cmdline~=net.exe start
+
