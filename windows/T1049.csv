@@ -1,0 +1,13 @@
+T1049,windows,0940a971,System Network Connections Discovery
+_E_,Process,cmdline~=netstat
+_E_,Process,cmdline~=net use
+_E_,Process,cmdline~=net sessions
+
+T1049,windows,f069f0f1,System Network Connections Discovery with PowerShell
+_E_,AMSI,scan_content~=Get-NetTCPConnection
+
+T1049,windows,96f974bb,System Discovery using SharpView
+_E_,Process,cmdline~=SharpView.exe Invoke-ACLScanner
+_E_,Process,cmdline~=SharpView.exe Invoke-Kerberoast
+_E_,Process,cmdline~=SharpView.exe Find-DomainShare
+
