@@ -1,0 +1,2 @@
+T1547.002,windows,be2590e8,Authentication Package
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Control\Lsa,value_name~=Authentication Packages
