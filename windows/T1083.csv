@@ -1,0 +1,18 @@
+T1083,windows,0e36303b,File and Directory Discovery (cmd.exe)
+FYI, Test ran when timeout was set to 1000 seconds
+_E_,Process,cmdline~=tree /F
+
+T1083,windows,2158908e,File and Directory Discovery (PowerShell)
+FYI, Test ran when timeout was set to 300 seconds
+_E_,AMSI,scan_content~=ls -recurse
+_E_,AMSI,scan_content~=get-childitem -recurse
+_E_,AMSI,scan_content~=gci -recurse
+
+T1083,windows,c6c34f61,Simulating MAZE Directory Enumeration
+_E_,AMSI,scan_content~=Get-ChildItem -Path $env:homedrive
+_E_,AMSI,scan_content~=Get-ChildItem -Path $env:programfiles
+_E_,AMSI,scan_content~=Get-ChildItem -Path "${env:ProgramFiles(x86)}"
+_E_,AMSI,scan_content~=Get-ChildItem -Path "$UsersFolder/$directory/$secondarydirectory"
+
+T1083,windows,c5bec457,Launch DirLister Executable
+_E_,Process,cmdline~=DirLister.exe
