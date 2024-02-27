@@ -1,0 +1,10 @@
+T1547.003,windows,df1efab7,Create a new time provider
+_E_,REG,event_type~=CREATEKEY,key_name~=Services\W32Time\TimeProviders\AtomicTest
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Services\W32Time\TimeProviders\AtomicTest,value_name=DllName
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Services\W32Time\TimeProviders\AtomicTest,value_name=Enabled
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Services\W32Time\TimeProviders\AtomicTest,value_name=InputProvider
+
+T1547.003,windows,29e0afca,Edit an existing time provider
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Services\W32Time\TimeProviders\NtpServer,value_name=DllName
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Services\W32Time\TimeProviders\NtpServer,value_name=Enabled
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Services\W32Time\TimeProviders\NtpServer,value_name=InputProvider
