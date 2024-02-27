@@ -1,0 +1,3 @@
+T1547,windows,cb01b3da,Add a driver
+ARG,driver_inf,C:\Windows\INF\usbstor.inf
+_E_,Process,cmdline~=pnputil.exe /add-driver #{driver_inf}
