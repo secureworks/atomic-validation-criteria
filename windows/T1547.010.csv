@@ -1,0 +1,3 @@
+T1547.010,windows,d34ef297,Add Port Monitor persistence in Registry
+_E_,REG,event_type=CREATEKEY,key_name~=Control\Print\Monitors\AtomicRedTeam
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Print\Monitors\AtomicRedTeam,value_name~=Driver
