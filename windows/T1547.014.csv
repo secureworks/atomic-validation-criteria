@@ -1,0 +1,13 @@
+T1547.014,windows,deff4586,HKLM - Add atomic_test key to launch executable as part of user setup
+_E_,REG,event_type~=CREATEKEY,key_name~=SOFTWARE\Microsoft\Active Setup\Installed Components
+_E_,REG,event_type~=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Active Setup\Installed Components
+_E_,REG,event_type~=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Active Setup\Installed Components,value_name~=StubPath
+_E_,Process,cmdline~=system32\runonce.exe /AlternateShellStartup
+
+T1547.014,windows,39e417dd,HKLM - Add malicious StubPath value to existing Active Setup Entry
+_E_,REG,event_type~=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Active Setup\Installed Components\{C9E9A340-D1F1-11D0-821E-444553540600},value_name~=StubPath
+_E_,Process,cmdline~=system32\runonce.exe /AlternateShellStartup
+
+T1547.014,windows,04d55cef,HKLM - re-execute 'Internet Explorer Core Fonts' StubPath payload by decreasing version number
+_E_,REG,event_type~=SETVALUEKEY,key_name~=Microsoft\Active Setup\Installed Components\{C9E9A340-D1F1-11D0-821E-444553540600},value_name=Version
+_E_,Process,cmdline~=system32\runonce.exe /AlternateShellStartup
