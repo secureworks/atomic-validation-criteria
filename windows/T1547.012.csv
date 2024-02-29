@@ -1,0 +1,3 @@
+T1547.012,windows,f7d38f47,Print Processors
+_E_,REG,event_type=CREATEKEY,key_name~=Control\Print\Environments\Windows x64\Print Processors\AtomicRedTeam
+_E_,REG,event_type=SETVALUEKEY,key_name~=Control\Print\Environments\Windows x64\Print Processors\AtomicRedTeam,value_name=Driver
