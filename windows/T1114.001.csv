@@ -1,0 +1,4 @@
+T1114.001,windows,3f1b5096,Email Collection with PowerShell Get-Inbox
+ARG,output_file,$env:TEMP\mail.csv
+ARG,file_path,PathToAtomicsFolder\T1114.001\src
+_E_,AMSI,scan_content~=powershell -executionpolicy bypass -command,scan_content~=Get-Inbox.ps1" -file #{output_file}
