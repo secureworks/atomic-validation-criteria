@@ -3,51 +3,51 @@ T1222.002,macos,34ca1464,chmod - Change file or folder mode (numeric mode)
 ARG,numeric_mode,755
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002
 _E_,Process,cmdline~=chmod #{numeric_mode} #{file_or_folder}
-_E_,FileMod,CHMOD,path~=#{file_or_folder}
+_E_,File,CHMOD,path~=#{file_or_folder}
 
 T1222.002,macos,fc9d6695,chmod - Change file or folder mode (symbolic mode)
 ARG,symbolic_mode,a+w
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002
 _E_,Process,cmdline~=chmod #{symbolic_mode} #{file_or_folder}
-_E_,FileMod,CHMOD,path~=#{file_or_folder}
+_E_,File,CHMOD,path~=#{file_or_folder}
 
 T1222.002,macos,ea79f937,chmod - Change file or folder mode (numeric mode) recursively
 ARG,numeric_mode,755
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002
 _E_,Process,cmdline~=chmod -R #{numeric_mode} #{file_or_folder}
-_E_,FileMod,CHMOD,path~=#{file_or_folder}
+_E_,File,CHMOD,path~=#{file_or_folder}
 
 T1222.002,macos,0451125c,chmod - Change file or folder mode (symbolic mode) recursively
 ARG,symbolic_mode,a+w
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002
 _E_,Process,cmdline~=chmod -R #{symbolic_mode} #{file_or_folder}
-_E_,FileMod,CHMOD,path~=#{file_or_folder}
+_E_,File,CHMOD,path~=#{file_or_folder}
 
 T1222.002,macos,d169e71b,chown - Change file or folder ownership and group
 ARG,owner,root
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002/T1222.002.yaml
 ARG,group,root
 _E_,Process,cmdline~=chown #{owner}:#{group} #{file_or_folder}
-_E_,FileMod,CHOWN,path~=#{file_or_folder}
+_E_,File,CHOWN,path~=#{file_or_folder}
 
 T1222.002,macos,b78598be,chown - Change file or folder ownership and group recursively
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002
 ARG,group,root
 ARG,owner,root
 _E_,Process,cmdline~=chown -R #{owner}:#{group} #{file_or_folder}
-_E_,FileMod,CHOWN,path~=#{file_or_folder}
+_E_,File,CHOWN,path~=#{file_or_folder}
 
 T1222.002,macos,967ba79d,chown - Change file or folder mode ownership only
 ARG,owner,root
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002/T1222.002.yaml
 _E_,Process,cmdline~=chown #{owner} #{file_or_folder}
-_E_,FileMod,CHOWN,path~=#{file_or_folder}
+_E_,File,CHOWN,path~=#{file_or_folder}
 
 T1222.002,macos,3b015515,chown - Change file or folder ownership recursively
 ARG,owner,root
 ARG,file_or_folder,/tmp/AtomicRedTeam/atomics/T1222.002
 _E_,Process,cmdline~=chown -R #{owner} #{file_or_folder}
-_E_,FileMod,CHOWN,path~=#{file_or_folder}
+_E_,File,CHOWN,path~=#{file_or_folder}
 
 T1222.002,macos,e7469fe2,chattr - Remove immutable file attribute
 FYI,TODO - have atomic test create dir if not present
@@ -59,10 +59,10 @@ FYI,Auto-generated please review
 ARG,source_file,PathToAtomicsFolder/T1222.002/src/T1222.002.c
 ARG,compiled_file,/tmp/T1222002
 _E_,Process,cmdline~=#{compiled_file} /tmp/ T1222002
-_E_,FileMod,CHMOD,path~=#{compiled_file}
+_E_,File,CHMOD,path~=#{compiled_file}
 
 T1222.002,macos,18592ba1,Chown through c script
 ARG,source_file,PathToAtomicsFolder/T1222.002/src/chown.c
 ARG,compiled_file,/tmp/T1222002own
 _E_,Process,cmdline~=sudo #{compiled_file} #{source_file}
-_E_,FileMod,CHOWN,path~=#{source_file}
+_E_,File,CHOWN,path~=#{source_file}
