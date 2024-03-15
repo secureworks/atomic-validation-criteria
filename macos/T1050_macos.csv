@@ -2,7 +2,7 @@ T1053.003,macos,435057fb,Cron - Replace crontab with referenced file
 ARG,command,/tmp/evil.sh
 ARG,tmp_cron,/tmp/T1053.003_435_replacedcrontab
 _E_,Process,cmdline~=crontab -l
-_E_,FileMod,WRITE,path~=#{tmp_cron}
+_E_,File,WRITE,path~=#{tmp_cron}
 _E_,Process,cmdline~=crontab #{tmp_cron}
 # prereq does not create /tmp/evil.sh, so don't expect it to run
 
@@ -16,7 +16,7 @@ _E_,Process,exepath~=osascript,cmdline~=tell app "System Preferences" to activat
 T1059.002,macos,1,AppleScript
 _E_,Process,cmdline~=osascript
 
-T1059.002,macos,2,AppleScript cURL
+T1059.002,macos,8228735a,AppleScript cURL
 ARG,script_url,http://localhost/whoami.scpt
 _E_,Process,exepath~=bash
 _E_,Process,cmdline=curl -s #{script_url}
@@ -38,3 +38,9 @@ _E_,Process,exepath~=bash
 _E_,Process,exepath~=osacompile,cmdline*=(-x).*(-e)
 _E_,Process,exepath~=osascript
 _C_,Process,PTree,0->1,0->2
+
+T1059.002,macos,67e5d354,AppleScript NSAppleScript execution
+ARG,osakit_swift_source,PathToAtomicsFolder/T1059.002/src/nsapplescript_example.swift
+ARG,path_malicious_scpt,PathToAtomicsFolder/T1059.002/src/whoami.scpt
+_E_,Process,cmdline=/usr/bin/swiftc -o /tmp/osakit #{osakit_swift_source}
+_E_,Process,cmdline=/tmp/osakit #{path_malicious_scpt}
