@@ -2,10 +2,10 @@ T1047,windows,c107778c,WMI Reconnaissance Users
 _E_,Process,cmdline~=wmic useraccount get /ALL /format:csv
 
 T1047,windows,5750aa16,WMI Reconnaissance Processes
-_E_,Process,cmdline~=wmic process get caption,executablepath,commandline /format:csv
+_E_,Process,"cmdline~=wmic process get caption,executablepath,commandline /format:csv"
 
 T1047,windows,718aebaa,WMI Reconnaissance Software
-_E_,Process,cmdline~=wmic qfe get description,installedOn /format:csv
+_E_,Process,"cmdline~=wmic qfe get description,installedOn /format:csv"
 
 T1047,windows,0fd48ef7,WMI Reconnaissance List Remote Services
 ARG,node,127.0.0.1
