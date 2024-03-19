@@ -18,14 +18,12 @@ _E_,Process,cmdline~=osascript
 
 T1059.002,macos,8228735a,AppleScript cURL
 ARG,script_url,http://localhost/whoami.scpt
-_E_,Process,exepath~=bash
-_E_,Process,cmdline=curl -s #{script_url}
-_E_,Process,cmdline=osascript
-_C_,Process,Pipe,1,2
-_C_,Process,PTree,0->1,0->2
+_E_,Process,cmdline~=curl -s #{script_url}
+_E_,Process,cmdline~=osascript
+_C_,Process,Pipe,0,1
 
 T1059.002,macos,3,AppleScript Shell Script
-_E_,Process,cmdline=osascript #{path_malicious_shell_scpt}
+_E_,Process,cmdline~=osascript #{path_malicious_shell_scpt}
 
 T1059.002,macos,4,AppleScript Dialog Prompts
 _E_,Process,exepath~=osascript,cmdline*=(-e).*((display dialog)|(display notification)|(display alert)).*((password)|(credential))
@@ -34,13 +32,9 @@ T1059.002,macos,5,AppleScript Privilege Escalation
 _E_,Process,exepath~=osascript,cmdline*=(-e).*(administrator privileges)
 
 T1059.002,macos,6,AppleScript OSACompile Run Only
-_E_,Process,exepath~=bash
 _E_,Process,exepath~=osacompile,cmdline*=(-x).*(-e)
 _E_,Process,exepath~=osascript
-_C_,Process,PTree,0->1,0->2
 
 T1059.002,macos,67e5d354,AppleScript NSAppleScript execution
-ARG,osakit_swift_source,PathToAtomicsFolder/T1059.002/src/nsapplescript_example.swift
-ARG,path_malicious_scpt,PathToAtomicsFolder/T1059.002/src/whoami.scpt
 _E_,Process,cmdline=/usr/bin/swiftc -o /tmp/osakit #{osakit_swift_source}
 _E_,Process,cmdline=/tmp/osakit #{path_malicious_scpt}

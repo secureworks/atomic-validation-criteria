@@ -99,4 +99,4 @@ T1074.001,macos,39ce0303,Stage data from Discovery.sh
 ARG,output_file,/tmp/T1074.001_discovery.log
 _E_,Process,cmdline~=curl -s https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1074.001/src/Discovery.sh
 _E_,Process,cmdline~=bash -s
-_E_,Filemod,WRITE,path=#{output_file}
+_E_,File,WRITE,path=#{output_file}
