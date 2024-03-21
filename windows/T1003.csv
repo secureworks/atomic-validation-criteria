@@ -26,5 +26,6 @@ T1003,windows,42510244,Retrieve Microsoft IIS Service Account Credentials Using 
 _E_,Process,cmdline~=C:\Windows\System32\inetsrv\appcmd.exe list apppool /config
 
 T1003,windows,84113186,Dump Credential Manager using keymgr.dll and rundll32.exe
+!!!, Skipping the test as it requires user intervention
 _E_,Process,"cmdline~=rundll32.exe keymgr,KRShowKeyMgr"
 
