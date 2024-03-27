@@ -19,7 +19,7 @@ FYI,Test fails as the list of servers for this workgroup is not currently availa
 ARG,port_file,PathToAtomicsFolder\T1016\src\top-128.txt
 ARG,output_file,%USERPROFILE%\Desktop\open-ports.txt
 ARG,portfile_url,https://github.com/redcanaryco/atomic-red-team/raw/master/atomics/T1016/src/top-128.txt
-_E_,AMSI,scan_content~=$wait = $test.beginConnect("allports.exposed", $port, $null, $null)
+_E_,AMSI,scan_content~=$wait = $test.beginConnect
 
 T1016,windows,9bb45dd7,Adfind - Enumerate Active Directory Subnet Objects
 FYI,Test fails due to the error "ldap_bind_s: [] Error 0x51 (81) - Server Down"
@@ -41,4 +41,3 @@ _E_,Process,cmdline~=net localgroup
 
 T1016,windows,34557863,DNS Server Discovery Using nslookup
 _E_,Process,cmdline~=nslookup -querytype=ALL -timeout=12 _ldap._tcp.dc._msdcs.
-
