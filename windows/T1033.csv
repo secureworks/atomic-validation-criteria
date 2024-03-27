@@ -7,8 +7,8 @@ _E_,Process,cmdline~=quser /SERVER:"#{computer_name}"
 _E_,Process,cmdline~=quser
 _E_,Process,cmdline~=qwinsta.exe /server:#{computer_name}
 _E_,Process,cmdline~=qwinsta.exe
-_E_,Process,cmdline~=for /F "tokens=1,2" %i in ('qwinsta /server:#{computer_name} ^| findstr "Active Disc"') do @echo %i | find /v "#" | find /v "console" || echo %j > computers.txt
-_E_,Process,cmdline~=@FOR /F %n in (computers.txt) DO @FOR /F "tokens=1,2" %i in ('qwinsta /server:%n ^| findstr "Active Disc"') do @echo %i | find /v "#" | find /v "console" || echo %j > usernames.txt
+_E_,Process,"cmdline~=for /F "tokens=1,2" %i in ('qwinsta /server:#{computer_name} ^| findstr "Active Disc"') do @echo %i | find /v "#" | find /v "console" || echo %j > computers.txt"
+_E_,Process,"cmdline~=@FOR /F %n in (computers.txt) DO @FOR /F "tokens=1,2" %i in ('qwinsta /server:%n ^| findstr "Active Disc"') do @echo %i | find /v "#" | find /v "console" || echo %j > usernames.txt"
 
 T1033,windows,29857f27,Find computers where user has session - Stealth mode (PowerView)
 FYI, Test fails as there is no Active Directory Domain
@@ -34,4 +34,3 @@ _E_,Process,cmdline~=echo Username: %USERNAME% > %file%
 _E_,Process,cmdline~=echo User Domain: %USERDOMAIN% >> %file%
 _E_,Process,cmdline~=net users >> %file%
 _E_,Process,cmdline~=query user >> %file%
-
