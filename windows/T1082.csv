@@ -80,7 +80,7 @@ _E_,Process,cmdline~=wmic bios get SMBIOSBIOSVersion
 _E_,Process,cmdline~=wmic path win32_VideoController get name
 _E_,Process,cmdline~=wmic path win32_VideoController get DriverVersion
 _E_,Process,cmdline~=wmic path win32_VideoController get VideoModeDescription
-_E_,Process,cmdline~=wmic OS get Caption,OSArchitecture,Version
+_E_,Process,"cmdline~=wmic OS get Caption,OSArchitecture,Version"
 _E_,Process,cmdline~=wmic DISKDRIVE get Caption
 _E_,Process,cmdline~=Get-WmiObject win32_bios
 
