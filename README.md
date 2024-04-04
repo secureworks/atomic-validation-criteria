@@ -132,3 +132,45 @@ The netflow format is `protocol:local_ip:localport->remote_host:remote_port`.  U
 ```
 _E_,Netflow,TCP:*->#{remote_host}:#{remote_port}
 ```
+
+### `_E_,AMSI` row
+
+The AMSI row is mainly for matching `scan_content` field.
+- `scan_content` : content from the AMSI scan.
+- `app_name` : name of the application where the event occurred.
+
+Example:
+
+```
+_E_,AMSI,scan_content~=:Get-NetTCPConnection
+```
+
+### `_E_,REG` row
+
+For windows registry event first specify the `event_type` as CREATEKEY/SETVALUEKEY/DELETEKEY, then if applicable enter the appropriate values of `key_name` and `value_name`
+
+Example:
+
+```
+_E_,REG,event_type=SETVALUEKEY,key_name~=SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced,value_name=HideFileExt
+```
+
+### `_E_,API` row
+
+The API row is mainly used to match `function_called` field . Other fields like `parameter_names` and `parameter_values` can be used to match parameter values.  
+
+Example:
+
+```
+_E_,API,function_called=<function_name>,parameter_names=<name_of_function_parameters>
+```
+
+### `_E_,ETW` row
+
+The ETW format is: `event_msg:<event message>` followed by other optional fields `chan_name` and `event_data_list`  
+
+Example:
+
+```
+_E_,ETW,event_msg=<event_message>
+```
